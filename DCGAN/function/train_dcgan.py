@@ -108,11 +108,14 @@ def main():
     mods.append(discriminator)
 
     # metric
-    mG = mx.metric.CustomMetric(metric.fentropy)
-    mD = mx.metric.CustomMetric(metric.fentropy)
-    mACC = mx.metric.CustomMetric(metric.facc)
-    test_metric = metric.CrossEntropyMetric()
-    test_metric.reset()
+    # mG = mx.metric.CustomMetric(metric.fentropy)
+    # mD = mx.metric.CustomMetric(metric.fentropy)
+    # mACC = mx.metric.CustomMetric(metric.facc)
+    # test_metric = metric.CrossEntropyMetric()
+    # test_metric.reset()
+    mG = metric.CrossEntropyMetric()
+    mD = metric.CrossEntropyMetric()
+    mACC = metric.AccMetric()
 
     # =============train===============
     for epoch in range(config.TRAIN.end_epoch):
@@ -134,7 +137,7 @@ def main():
 
             discriminator.update_metric(mD, [label])
             discriminator.update_metric(mACC, [label])
-            test_metric.update([label], discriminator.get_outputs())
+            # test_metric.update([label], discriminator.get_outputs())
 
             # update discriminator on real
             label[:] = 1
@@ -148,7 +151,7 @@ def main():
 
             discriminator.update_metric(mD, [label])
             discriminator.update_metric(mACC, [label])
-            test_metric.update([label], discriminator.get_outputs())
+            # test_metric.update([label], discriminator.get_outputs())
 
             # update generator
             label[:] = 1
