@@ -48,7 +48,7 @@ def main():
     frequent = config.default.frequent
     check_point = True
 
-    logger, final_output_path = create_logger(config.output_path, args.cfg, config.dataset.image_set)
+    logger, final_output_path = create_logger(config.output_path, args.cfg)
     prefix = os.path.join(final_output_path, config.TRAIN.model_prefix)
 
     mx.random.seed(config.RNG_SEED)
