@@ -153,7 +153,7 @@ def main():
 
             t += 1
             if t % frequent == 0:
-                visualize(outG[0].asnumpy(), batch.data[0].asnumpy())
+                # visualize(outG[0].asnumpy(), batch.data[0].asnumpy())
                 # print('epoch:', epoch, 'iter:', t, 'metric:', mACC.get(), mG.get(), mD.get())
                 logger.info('Epoch[{}] Batch[{}] dACC: {} gCE: {} dCE: {}\n'.format(epoch, t, mACC.get(), mG.get(), mD.get()))
             #     mACC.reset()
