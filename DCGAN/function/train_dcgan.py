@@ -134,6 +134,7 @@ def main():
 
             discriminator.update_metric(mD, [label])
             discriminator.update_metric(mACC, [label])
+            test_metric.update([label], discriminator.get_outputs())
 
             # update discriminator on real
             label[:] = 1
