@@ -111,6 +111,8 @@ def main():
     mG = mx.metric.CustomMetric(metric.fentropy)
     mD = mx.metric.CustomMetric(metric.fentropy)
     mACC = mx.metric.CustomMetric(metric.facc)
+    test_metric = metric.CrossEntropyMetric()
+    test_metric.reset()
 
     # =============train===============
     for epoch in range(config.TRAIN.end_epoch):
@@ -145,6 +147,7 @@ def main():
 
             discriminator.update_metric(mD, [label])
             discriminator.update_metric(mACC, [label])
+            test_metric.update([label], discriminator.get_outputs())
 
             # update generator
             label[:] = 1
@@ -164,8 +167,8 @@ def main():
 
         if check_point:
             print('Saving...')
-            visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), train_fig_prefix + '-train-%04d.png' % epoch + 1)
-            generator.save_params(prefix + '-generator-%04d.params' % epoch + 1)
-            discriminator.save_params(prefix + '-discriminator-%04d.params' % epoch + 1)
+            visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), train_fig_prefix + '-train-%04d.png' % (epoch + 1))
+            generator.save_params(prefix + '-generator-%04d.params' % (epoch + 1))
+            discriminator.save_params(prefix + '-discriminator-%04d.params' % (epoch + 1))
 
 
