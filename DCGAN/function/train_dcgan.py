@@ -45,6 +45,8 @@ def main():
     beta1 = config.TRAIN.beta1
     sigma = 0.02
     ctx = [mx.gpu(int(i)) for i in config.gpus.split(',')]
+    assert len(ctx) == 1
+    ctx = ctx[0]
     frequent = config.default.frequent
     check_point = True
 
