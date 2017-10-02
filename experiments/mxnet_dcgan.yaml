@@ -10,3 +10,5 @@ dataset:
 TRAIN:
   lr: 0.0002
   beta1: 0.5
+  end_epoch: 1
+  model_prefix: 'DCGAN'
