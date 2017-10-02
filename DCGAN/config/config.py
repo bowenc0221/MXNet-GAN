@@ -47,6 +47,10 @@ config.TRAIN.SHUFFLE = True
 # batch size
 config.TRAIN.BATCH_SIZE = 64
 
+config.TEST = edict()
+
+config.TEST.TEST_EPOCH = 0
+
 
 def update_config(config_file):
     exp_config = None

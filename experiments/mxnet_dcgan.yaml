@@ -12,3 +12,5 @@ TRAIN:
   beta1: 0.5
   end_epoch: 1
   model_prefix: 'DCGAN'
+TEST:
+  TEST_EPOCH: 1

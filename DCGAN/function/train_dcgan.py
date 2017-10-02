@@ -52,6 +52,12 @@ def main():
 
     logger, final_output_path = create_logger(config.output_path, args.cfg)
     prefix = os.path.join(final_output_path, config.TRAIN.model_prefix)
+    train_fig_path = os.path.join(final_output_path, 'train_fig')
+
+    train_fig_prefix = os.path.join(train_fig_path, dataset)
+
+    if not os.path.exists(train_fig_path):
+        os.makedirs(train_fig_path)
 
     mx.random.seed(config.RNG_SEED)
     np.random.seed(config.RNG_SEED)
@@ -158,8 +164,8 @@ def main():
 
         if check_point:
             print('Saving...')
-            visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), prefix + '-train-%04d.png' % epoch)
-            generator.save_params(prefix + '-generator-%04d.params' % epoch)
-            discriminator.save_params(prefix + '-discriminator-%04d.params' % epoch)
+            visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), train_fig_prefix + '-train-%04d.png' % epoch + 1)
+            generator.save_params(prefix + '-generator-%04d.params' % epoch + 1)
+            discriminator.save_params(prefix + '-discriminator-%04d.params' % epoch + 1)
 
 

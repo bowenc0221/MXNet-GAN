@@ -43,10 +43,16 @@ def main():
     ctx = [mx.gpu(int(i)) for i in config.gpus.split(',')]
     assert len(ctx) == 1
     ctx = ctx[0]
-    epoch = config.TRAIN.end_epoch
+    epoch = config.TEST.TEST_EPOCH
 
     logger, final_output_path = create_logger(config.output_path, args.cfg)
     prefix = os.path.join(final_output_path, config.TRAIN.model_prefix)
+    test_fig_path = os.path.join(final_output_path, 'test_fig')
+
+    if not os.path.exists(test_fig_path):
+        os.makedirs(test_fig_path)
+
+    test_fig_prefix = os.path.join(test_fig_path, dataset)
 
     mx.random.seed(config.RNG_SEED)
     np.random.seed(config.RNG_SEED)
@@ -78,4 +84,4 @@ def main():
     rbatch = rand_iter.next()
     generator.forward(rbatch, is_train=False)
     outG = generator.get_outputs()
-    visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), prefix + '-test-%04d.png' % epoch)
+    visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), test_fig_prefix + '-test-%04d.png' % epoch)
