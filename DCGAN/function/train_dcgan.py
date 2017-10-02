@@ -150,21 +150,11 @@ def main():
 
             mG.update([label], discriminator.get_outputs())
 
-
             t += 1
             if t % frequent == 0:
                 # visualize(outG[0].asnumpy(), batch.data[0].asnumpy())
-                # print('epoch:', epoch, 'iter:', t, 'metric:', mACC.get(), mG.get(), mD.get())
-                logger.info('Epoch[{}] Batch[{}] dACC: {} gCE: {} dCE: {}\n'.format(epoch, t, mACC.get(), mG.get(), mD.get()))
-            #     mACC.reset()
-            #     mG.reset()
-            #     mD.reset()
-            #
-            #     visual('gout', outG[0].asnumpy())
-            #     diff = diffD[0].asnumpy()
-            #     diff = (diff - diff.mean()) / diff.std()
-            #     visual('diff', diff)
-            #     visual('data', batch.data[0].asnumpy())
+                print 'Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}'.format(epoch, t, mACC.get(), mG.get(), mD.get())
+                logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get(), mG.get(), mD.get()))
 
         if check_point:
             print('Saving...')
