@@ -16,7 +16,7 @@ def fill_buf(buf, num_images, img, shape):
 
 
 # Plots two images side by side using matplotlib
-def visualize(fake, real):
+def visualize(fake, real, fname):
     # 64x3x64x64 to 64x64x64x3
     fake = fake.transpose((0, 2, 3, 1))
     # Pixel values from 0-255
@@ -42,4 +42,5 @@ def visualize(fake, real):
     ax1.imshow(fbuff)
     ax2 = fig.add_subplot(2, 2, 2)
     ax2.imshow(rbuff)
-    plt.show()
+    # plt.show()
+    plt.savefig(fname)

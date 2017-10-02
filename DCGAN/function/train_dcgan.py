@@ -158,7 +158,8 @@ def main():
 
         if check_point:
             print('Saving...')
-            generator.save_params(prefix + '-%04d.params' % epoch)
-            discriminator.save_params(prefix + '-%04d.params' % epoch)
+            visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), prefix + '-train-%04d.png' % epoch)
+            generator.save_params(prefix + '-generator-%04d.params' % epoch)
+            discriminator.save_params(prefix + '-discriminator-%04d.params' % epoch)
 
 
