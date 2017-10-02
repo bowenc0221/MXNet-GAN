@@ -70,7 +70,7 @@ def main():
     pprint.pprint(config)
     logger.info('system:{}'.format(os.uname()))
     logger.info('mxnet path:{}'.format(mx.__file__))
-    logger.info('set rng seed:{} rng seed:{}'.format(config.SET_RNG_SEED, config.RNG_SEED))
+    logger.info('rng seed:{}'.format(config.RNG_SEED))
     logger.info('training config:{}\n'.format(pprint.pformat(config)))
 
     # =============Generator Module=============
