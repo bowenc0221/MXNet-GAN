@@ -148,7 +148,7 @@ def main():
             generator.backward(diffD)
             generator.update()
 
-            generator.update_metric(mG, [label])
+            mG.update([label], discriminator.get_outputs())
 
 
             t += 1
