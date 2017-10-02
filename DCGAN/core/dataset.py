@@ -1,5 +1,5 @@
 from sklearn.datasets import fetch_mldata
-from numpy import np
+import numpy as np
 import cv2
 
 def get_mnist():
