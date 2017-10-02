@@ -153,8 +153,8 @@ def main():
             t += 1
             if t % frequent == 0:
                 # visualize(outG[0].asnumpy(), batch.data[0].asnumpy())
-                print 'Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}'.format(epoch, t, mACC.get(), mG.get(), mD.get())
-                logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get(), mG.get(), mD.get()))
+                print 'Epoch[{}] Batch[{}] dACC: {} gCE: {} dCE: {}'.format(epoch, t, mACC.get(), mG.get(), mD.get())
+                logger.info('Epoch[{}] Batch[{}] dACC: {} gCE: {} dCE: {}\n'.format(epoch, t, mACC.get(), mG.get(), mD.get()))
 
         if check_point:
             print('Saving...')
