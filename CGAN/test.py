@@ -5,7 +5,7 @@ os.environ['MXNET_CUDNN_AUTOTUNE_DEFAULT'] = '0'
 os.environ['MXNET_ENABLE_GPU_P2P'] = '0'
 this_dir = os.path.dirname(__file__)
 
-from function import test_dcgan
+from function import test_cgan
 
 if __name__ == "__main__":
-    test_dcgan.main()
+    test_cgan.main()

@@ -8,7 +8,7 @@ import sys
 import matplotlib
 matplotlib.use('Agg')
 from config.config import config, update_config
-from symbols.mxnet_dcgan import get_symbol_generator, get_symbol_discriminator
+from symbols.mxnet_cgan import get_symbol_generator, get_symbol_discriminator
 from core.dataset import get_mnist
 from core.create_logger import create_logger
 from core.loader import RandIter
