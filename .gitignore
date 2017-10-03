@@ -88,7 +88,7 @@ lib/nms/*.cpp
 
 external
 output
-data
+datasets
 
 .db
 .DS_Store
