@@ -82,7 +82,7 @@ def main():
 
     # =============Generator Module=============
     generatorSymbol = get_symbol_generator()
-    generator = mx.mod.Module(symbol=generatorSymbol, data_names=('rand',), label_names=None, context=ctx)
+    generator = mx.mod.Module(symbol=generatorSymbol, data_names=('class_label', 'rand',), label_names=None, context=ctx)
     generator.bind(data_shapes=[('class_label', (batch_size, num_classes))] + rand_iter.provide_data)
     generator.init_params(initializer=mx.init.Normal(sigma))
     generator.init_optimizer(
@@ -95,7 +95,7 @@ def main():
 
     # =============Discriminator Module=============
     discriminatorSymbol = get_symbol_discriminator()
-    discriminator = mx.mod.Module(symbol=discriminatorSymbol, data_names=('data',), label_names=('label',), context=ctx)
+    discriminator = mx.mod.Module(symbol=discriminatorSymbol, data_names=('data', 'class_label',), label_names=('label',), context=ctx)
     discriminator.bind(data_shapes=train_iter.provide_data + [('class_label', (batch_size, num_classes))],
                        label_shapes=[('label', (batch_size,))],
                        inputs_need_grad=True)

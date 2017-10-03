@@ -76,7 +76,7 @@ def main():
 
     # =============Generator Module=============
     generatorSymbol = get_symbol_generator()
-    generator = mx.mod.Module(symbol=generatorSymbol, data_names=('rand',), label_names=None, context=ctx)
+    generator = mx.mod.Module(symbol=generatorSymbol, data_names=('class_label', 'rand',), label_names=None, context=ctx)
     generator.bind(data_shapes=[('class_label', (batch_size, num_classes))] + rand_iter.provide_data)
     generator.load_params(prefix + '-generator-%04d.params' % epoch)
 
