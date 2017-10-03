@@ -88,9 +88,6 @@ lib/nms/*.cpp
 
 external
 output
-model
-data
-demo
 
 .db
 .DS_Store
