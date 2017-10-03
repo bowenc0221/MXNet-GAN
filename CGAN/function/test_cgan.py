@@ -92,4 +92,5 @@ def main():
 
     generator.forward(mx.io.DataBatch([batch_label_one_hot]+rbatch.data, []), is_train=False)
     outG = generator.get_outputs()
+    print 'Generate image to' + test_fig_path
     visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), test_fig_prefix + '-test-%04d.png' % epoch)
