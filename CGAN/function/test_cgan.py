@@ -85,8 +85,9 @@ def main():
     rbatch = rand_iter.next()
 
     batch_label_one_hot = np.zeros((batch_size, num_classes), dtype=np.float32)
-    for i in range(8):
-        batch_label_one_hot[i:i+8, i] = 1
+    # for i in range(8):
+    #     batch_label_one_hot[i:i+8, i] = 1
+    batch_label_one_hot[:, 3] = 1
     batch_label_one_hot = mx.nd.array(batch_label_one_hot)
 
     generator.forward(mx.io.DataBatch([batch_label_one_hot]+rbatch.data, []), is_train=False)
