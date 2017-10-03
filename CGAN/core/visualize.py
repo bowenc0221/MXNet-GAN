@@ -39,8 +39,10 @@ def visualize(fake, real, fname):
     # fill each plot with our buffer array, which creates the image
     fig = plt.figure()
     ax1 = fig.add_subplot(2, 2, 1)
+    ax1.axis('off')
     ax1.imshow(fbuff)
     ax2 = fig.add_subplot(2, 2, 2)
     ax2.imshow(rbuff)
+    ax2.axis('off')
     # plt.show()
     plt.savefig(fname)

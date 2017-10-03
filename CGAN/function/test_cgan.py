@@ -85,12 +85,15 @@ def main():
     rbatch = rand_iter.next()
 
     batch_label_one_hot = np.zeros((batch_size, num_classes), dtype=np.float32)
-    # for i in range(8):
-    #     batch_label_one_hot[i:i+8, i] = 1
-    batch_label_one_hot[:, 3] = 1
-    batch_label_one_hot = mx.nd.array(batch_label_one_hot)
 
-    generator.forward(mx.io.DataBatch([batch_label_one_hot]+rbatch.data, []), is_train=False)
-    outG = generator.get_outputs()
-    print 'Generate image to' + test_fig_path
-    visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), test_fig_prefix + '-test-%04d.png' % epoch)
+    for n in range(num_classes):
+        batch = test_iter.next()
+        rbatch = rand_iter.next()
+
+        batch_label_one_hot[:, n] = 1
+        batch_label_one_hot = mx.nd.array(batch_label_one_hot)
+
+        generator.forward(mx.io.DataBatch([batch_label_one_hot]+rbatch.data, []), is_train=False)
+        outG = generator.get_outputs()
+        print 'Generate image for digit %d' % n
+        visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), test_fig_prefix + '-test-digit-%d-%04d.png' % (n, epoch))
