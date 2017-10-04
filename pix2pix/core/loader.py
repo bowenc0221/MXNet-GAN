@@ -32,7 +32,8 @@ class pix2pixIter(mx.io.DataIter):
 
     @property
     def procide_data(self):
-        return [('A', (1, 3, 512, 512)), ('B', (1, 3, 512, 512))]
+        return [('A', (1, 3, self.config.fineSize, self.config.fineSize)),
+                ('B', (1, 3, self.config.fineSize, self.config.fineSize))]
 
     @property
     def provide_label(self):
@@ -64,7 +65,7 @@ class pix2pixIter(mx.io.DataIter):
         # cur_to = min(cur_from + self.batch_size, self.size)
 
         index = self.cur
-        AB_path = self.image_files[index]
+        AB_path = os.path.join(self.image_root, self.image_files[index])
         AB = Image.open(AB_path).convert('RGB')
         AB = AB.resize((self.config.loadSize * 2, self.config.loadSize), Image.BICUBIC)  # size = (width, height)
         # AB = self.transform(AB)
