@@ -71,21 +71,21 @@ class pix2pixIter(mx.io.DataIter):
         # AB = AB.resize((self.config.loadSize * 2, self.config.loadSize), Image.BICUBIC)  # size = (width, height)
         # AB = self.transform(AB)
 
-        w_total = AB.size(2)
+        w_total = AB.shape[1]
         w = int(w_total / 2)
-        h = AB.size(1)
+        h = AB.shape[0]
         w_offset = np.random.randint(0, max(0, w - self.config.fineSize - 1))
         h_offset = np.random.randint(0, max(0, h - self.config.fineSize - 1))
 
         # random crop
-        A = AB[:, h_offset:h_offset + self.config.fineSize,
-            w_offset:w_offset + self.config.fineSize]
-        B = AB[:, h_offset:h_offset + self.config.fineSize,
-            w + w_offset:w + w_offset + self.config.fineSize]
+        A = AB[h_offset:h_offset + self.config.fineSize,
+            w_offset:w_offset + self.config.fineSize, :]
+        B = AB[h_offset:h_offset + self.config.fineSize,
+            w + w_offset:w + w_offset + self.config.fineSize, :]
 
         if self.config.TRAIN.FLIP and np.random.random() < 0.5:
-            A = A[:, :, ::-1]
-            B = B[:, :, ::-1]
+            A = A[:, ::-1, :]
+            B = B[:, ::-1, :]
 
-        self.A = A
-        self.B = B
+        self.A = A.astype(np.float32)/(255.0/2) - 1.0
+        self.B = B.astype(np.float32)/(255.0/2) - 1.0
