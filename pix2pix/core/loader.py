@@ -1,7 +1,7 @@
 import mxnet as mx
 import os
 import numpy as np
-from PIL import Image
+import cv2
 
 class pix2pixIter(mx.io.DataIter):
     def __init__(self, config, shuffle=False, ctx=None):
@@ -66,8 +66,9 @@ class pix2pixIter(mx.io.DataIter):
 
         index = self.cur
         AB_path = os.path.join(self.image_root, self.image_files[index])
-        AB = Image.open(AB_path).convert('RGB')
-        AB = AB.resize((self.config.loadSize * 2, self.config.loadSize), Image.BICUBIC)  # size = (width, height)
+        AB = cv2.imread(AB_path, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)
+        AB = cv2.resize(AB, (self.config.loadSize * 2, self.config.loadSize), interpolation = cv2.INTER_CUBIC)
+        # AB = AB.resize((self.config.loadSize * 2, self.config.loadSize), Image.BICUBIC)  # size = (width, height)
         # AB = self.transform(AB)
 
         w_total = AB.size(2)
