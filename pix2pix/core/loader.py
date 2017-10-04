@@ -100,5 +100,9 @@ class pix2pixIter(mx.io.DataIter):
             A = A[:, ::-1, :]
             B = B[:, ::-1, :]
 
+        # H x W x C -> H x W x C x 1 -> 1 x C x H x W
+        A = np.transpose(A[..., np.newaxis], (3, 2, 0, 1))
+        B = np.transpose(B[..., np.newaxis], (3, 2, 0, 1))
+
         self.A = A.astype(np.float32)/(255.0/2) - 1.0
         self.B = B.astype(np.float32)/(255.0/2) - 1.0
