@@ -31,7 +31,7 @@ class pix2pixIter(mx.io.DataIter):
         self.get_batch()
 
     @property
-    def procide_data(self):
+    def provide_data(self):
         return [('A', (1, 3, self.config.fineSize, self.config.fineSize)),
                 ('B', (1, 3, self.config.fineSize, self.config.fineSize))]
 
@@ -45,12 +45,25 @@ class pix2pixIter(mx.io.DataIter):
             np.random.shuffle(self.index)
 
     def iter_next(self):
-        return True
+        return self.cur < self.size
 
-    def getdata(self):
-        #Returns random numbers from a gaussian (normal) distribution
-        #with mean=0 and standard deviation = 1
-        return [mx.random.normal(0, 1.0, shape=(self.batch_size, self.ndim, 1, 1))]
+    def next(self):
+        if self.iter_next():
+            self.get_batch()
+            self.cur += self.batch_size
+            return mx.io.DataBatch(data=[mx.nd.array(self.A), mx.nd.array(self.B)],
+                                   label=self.getlabel(),
+                                   pad=self.getpad(), index=self.getindex(),
+                                   provide_data=self.provide_data, provide_label=self.provide_label)
+
+    def getindex(self):
+        return self.cur / self.batch_size
+
+    def getpad(self):
+        if self.cur + self.batch_size > self.size:
+            return self.cur + self.batch_size - self.size
+        else:
+            return 0
 
     def _load_image_path(self):
         fname = os.path.join(self.root, self.imageset + '.txt')
