@@ -25,6 +25,7 @@ class pix2pixIter(mx.io.DataIter):
         self.batch_size = config.TRAIN.BATCH_SIZE
         assert self.batch_size == 1
 
+        self.AtoB = config.AtoB
         self.A = None
         self.B = None
         self.reset()
@@ -51,7 +52,8 @@ class pix2pixIter(mx.io.DataIter):
         if self.iter_next():
             self.get_batch()
             self.cur += self.batch_size
-            return mx.io.DataBatch(data=[mx.nd.array(self.A), mx.nd.array(self.B)],
+            return mx.io.DataBatch(data=[mx.nd.array(self.A, ctx=self.ctx),
+                                         mx.nd.array(self.B, ctx=self.ctx)],
                                    label=self.getlabel(),
                                    pad=self.getpad(), index=self.getindex(),
                                    provide_data=self.provide_data, provide_label=self.provide_label)
@@ -104,5 +106,9 @@ class pix2pixIter(mx.io.DataIter):
         A = np.transpose(A[..., np.newaxis], (3, 2, 0, 1))
         B = np.transpose(B[..., np.newaxis], (3, 2, 0, 1))
 
-        self.A = A.astype(np.float32)/(255.0/2) - 1.0
-        self.B = B.astype(np.float32)/(255.0/2) - 1.0
+        if self.AtoB:
+            self.A = A.astype(np.float32) / (255.0 / 2) - 1.0
+            self.B = B.astype(np.float32) / (255.0 / 2) - 1.0
+        else:
+            self.B = A.astype(np.float32) / (255.0 / 2) - 1.0
+            self.A = B.astype(np.float32) / (255.0 / 2) - 1.0

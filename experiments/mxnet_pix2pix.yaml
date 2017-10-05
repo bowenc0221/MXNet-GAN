@@ -4,6 +4,7 @@ output_path: "./output/pix2pix"
 gpus: '1'
 loadSize: 286
 fineSize: 256
+AtoB: False
 
 default:
   frequent: 100

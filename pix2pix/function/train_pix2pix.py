@@ -12,7 +12,7 @@ from symbols.pix2pix import get_symbol_generator, get_symbol_discriminator
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 # from core.visualize import visualize
-# from core import metric
+from core import metric
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train PIX2PIX')
@@ -39,7 +39,6 @@ def main():
     # =============setting============
     dataset = config.dataset.dataset
     batch_size = config.TRAIN.BATCH_SIZE
-    Z = 100
     lr = config.TRAIN.lr
     beta1 = config.TRAIN.beta1
     sigma = 0.02
@@ -64,15 +63,9 @@ def main():
     # ==============data==============
     train_data = pix2pixIter(config, shuffle=True, ctx=ctx)
     print train_data.provide_data
-    # if dataset == 'mnist':
-    #     X_train, X_test = get_mnist()
-    #     train_iter = mx.io.NDArrayIter(X_train, batch_size=batch_size)
-    # else:
-    #     raise NotImplemented
-    #
-    # rand_iter = RandIter(batch_size, Z)
-    # label = mx.nd.zeros((batch_size,), ctx=ctx)
-    #
+
+    label = mx.nd.zeros((batch_size,), ctx=ctx)
+
     # # print config
     # pprint.pprint(config)
     # logger.info('system:{}'.format(os.uname()))
@@ -80,100 +73,102 @@ def main():
     # logger.info('rng seed:{}'.format(config.RNG_SEED))
     # logger.info('training config:{}\n'.format(pprint.pformat(config)))
     #
-    # # =============Generator Module=============
-    # generatorSymbol = get_symbol_generator()
-    # generator = mx.mod.Module(symbol=generatorSymbol, data_names=('rand',), label_names=None, context=ctx)
-    # generator.bind(data_shapes=rand_iter.provide_data)
-    # generator.init_params(initializer=mx.init.Normal(sigma))
-    # generator.init_optimizer(
-    #     optimizer='adam',
-    #     optimizer_params={
-    #         'learning_rate': lr,
-    #         'beta1': beta1,
-    #     })
-    # mods = [generator]
-    #
-    # # =============Discriminator Module=============
-    # discriminatorSymbol = get_symbol_discriminator()
-    # discriminator = mx.mod.Module(symbol=discriminatorSymbol, data_names=('data',), label_names=('label',), context=ctx)
-    # discriminator.bind(data_shapes=train_iter.provide_data,
-    #                    label_shapes=[('label', (batch_size,))],
-    #                    inputs_need_grad=True)
-    # discriminator.init_params(initializer=mx.init.Normal(sigma))
-    # discriminator.init_optimizer(
-    #     optimizer='adam',
-    #     optimizer_params={
-    #         'learning_rate': lr,
-    #         'beta1': beta1,
-    #     })
-    # mods.append(discriminator)
-    #
-    # # metric
-    # # mG = mx.metric.CustomMetric(metric.fentropy)
-    # # mD = mx.metric.CustomMetric(metric.fentropy)
-    # # mACC = mx.metric.CustomMetric(metric.facc)
-    # # test_metric = metric.CrossEntropyMetric()
-    # # test_metric.reset()
+    # =============Generator Module=============
+    generatorSymbol = get_symbol_generator()
+    generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
+    generator.bind(data_shapes=train_data.provide_data)
+    generator.init_params(initializer=mx.init.Normal(sigma))
+    generator.init_optimizer(
+        optimizer='adam',
+        optimizer_params={
+            'learning_rate': lr,
+            'beta1': beta1,
+        })
+    mods = [generator]
+
+    # =============Discriminator Module=============
+    discriminatorSymbol = get_symbol_discriminator()
+    discriminator = mx.mod.Module(symbol=discriminatorSymbol, data_names=('A', 'B',), label_names=('label',), context=ctx)
+    discriminator.bind(data_shapes=train_data.provide_data,
+                       label_shapes=[('label', (batch_size,))],
+                       inputs_need_grad=True)
+    discriminator.init_params(initializer=mx.init.Normal(sigma))
+    discriminator.init_optimizer(
+        optimizer='adam',
+        optimizer_params={
+            'learning_rate': lr,
+            'beta1': beta1,
+        })
+    mods.append(discriminator)
+
+    # metric
+    # mG = mx.metric.CustomMetric(metric.fentropy)
+    # mD = mx.metric.CustomMetric(metric.fentropy)
+    # mACC = mx.metric.CustomMetric(metric.facc)
+    # test_metric = metric.CrossEntropyMetric()
+    # test_metric.reset()
     # mG = metric.CrossEntropyMetric()
     # mD = metric.CrossEntropyMetric()
     # mACC = metric.AccMetric()
-    #
-    # # =============train===============
-    # for epoch in range(config.TRAIN.end_epoch):
-    #     train_iter.reset()
-    #     mACC.reset()
-    #     mG.reset()
-    #     mD.reset()
-    #     for t, batch in enumerate(train_iter):
-    #         rbatch = rand_iter.next()
-    #
-    #         generator.forward(rbatch, is_train=True)
-    #         outG = generator.get_outputs()
-    #
-    #         # update discriminator on fake
-    #         label[:] = 0
-    #         discriminator.forward(mx.io.DataBatch(outG, [label]), is_train=True)
-    #         discriminator.backward()
-    #         gradD = [[grad.copyto(grad.context) for grad in grads] for grads in discriminator._exec_group.grad_arrays]
-    #
-    #         discriminator.update_metric(mD, [label])
-    #         discriminator.update_metric(mACC, [label])
-    #         # test_metric.update([label], discriminator.get_outputs())
-    #
-    #         # update discriminator on real
-    #         label[:] = 1
-    #         batch.label = [label]
-    #         discriminator.forward(batch, is_train=True)
-    #         discriminator.backward()
-    #         for gradsr, gradsf in zip(discriminator._exec_group.grad_arrays, gradD):
-    #             for gradr, gradf in zip(gradsr, gradsf):
-    #                 gradr += gradf
-    #         discriminator.update()
-    #
-    #         discriminator.update_metric(mD, [label])
-    #         discriminator.update_metric(mACC, [label])
-    #         # test_metric.update([label], discriminator.get_outputs())
-    #
-    #         # update generator
-    #         label[:] = 1
-    #         discriminator.forward(mx.io.DataBatch(outG, [label]), is_train=True)
-    #         discriminator.backward()
-    #         diffD = discriminator.get_input_grads()
-    #         generator.backward(diffD)
-    #         generator.update()
-    #
-    #         mG.update([label], discriminator.get_outputs())
-    #
-    #         t += 1
-    #         if t % frequent == 0:
-    #             # visualize(outG[0].asnumpy(), batch.data[0].asnumpy())
-    #             print 'Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1])
-    #             logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1]))
-    #
-    #     if check_point:
-    #         print('Saving...')
-    #         visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), train_fig_prefix + '-train-%04d.png' % (epoch + 1))
-    #         generator.save_params(prefix + '-generator-%04d.params' % (epoch + 1))
-    #         discriminator.save_params(prefix + '-discriminator-%04d.params' % (epoch + 1))
+
+    # =============train===============
+    for epoch in range(config.TRAIN.end_epoch):
+        train_data.reset()
+        # mACC.reset()
+        # mG.reset()
+        # mD.reset()
+        for t, batch in enumerate(train_data):
+
+            generator.forward(batch, is_train=True)
+            outG = generator.get_outputs()
+
+            fake_batch = batch.copy()
+            fake_batch.data[1] = outG
+
+            # update discriminator on fake
+            label[:] = 0
+            discriminator.forward(mx.io.DataBatch(fake_batch.data, [label]), is_train=True)
+            discriminator.backward()
+            gradD = [[grad.copyto(grad.context) for grad in grads] for grads in discriminator._exec_group.grad_arrays]
+
+            # discriminator.update_metric(mD, [label])
+            # discriminator.update_metric(mACC, [label])
+            # test_metric.update([label], discriminator.get_outputs())
+
+            # update discriminator on real
+            label[:] = 1
+            batch.label = [label]
+            discriminator.forward(batch, is_train=True)
+            discriminator.backward()
+            for gradsr, gradsf in zip(discriminator._exec_group.grad_arrays, gradD):
+                for gradr, gradf in zip(gradsr, gradsf):
+                    gradr += gradf
+            discriminator.update()
+
+            # discriminator.update_metric(mD, [label])
+            # discriminator.update_metric(mACC, [label])
+            # test_metric.update([label], discriminator.get_outputs())
+
+            # update generator
+            label[:] = 1
+            discriminator.forward(mx.io.DataBatch(fake_batch.data, [label]), is_train=True)
+            discriminator.backward()
+            diffD = discriminator.get_input_grads()
+            generator.backward([mx.nd.array([1.0], ctx=ctx), diffD])
+            generator.update()
+
+            # mG.update([label], discriminator.get_outputs())
+
+            t += 1
+            # if t % frequent == 0:
+                # visualize(outG[0].asnumpy(), batch.data[0].asnumpy())
+                # print 'Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1])
+                # logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1]))
+
+        if check_point:
+            print('Saving...')
+            # visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), train_fig_prefix + '-train-%04d.png' % (epoch + 1))
+            generator.save_params(prefix + '-generator-%04d.params' % (epoch + 1))
+            discriminator.save_params(prefix + '-discriminator-%04d.params' % (epoch + 1))
 
 

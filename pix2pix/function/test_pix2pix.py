@@ -8,14 +8,14 @@
 # import matplotlib
 # matplotlib.use('Agg')
 # from config.config import config, update_config
-# from symbols.mxnet_dcgan import get_symbol_generator, get_symbol_discriminator
+# from symbols.pix2pix import get_symbol_generator, get_symbol_discriminator
 # from core.dataset import get_mnist
 # from core.create_logger import create_logger
 # from core.loader import RandIter
 # from core.visualize import visualize
 #
 # def parse_args():
-#     parser = argparse.ArgumentParser(description='Test DCGAN')
+#     parser = argparse.ArgumentParser(description='Test PIX2PIX')
 #     # general
 #     parser.add_argument('--cfg', help='experiment configure file name', required=True, type=str)
 #
