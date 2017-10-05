@@ -148,7 +148,7 @@ def main():
 
             # update discriminator on fake
             label[:] = 0
-            discriminator.forward(mx.io.DataBatch([batch.data[0], outG], [label]), is_train=True)
+            discriminator.forward(mx.io.DataBatch([batch.data[0], outG[1]], [label]), is_train=True)
             discriminator.backward()
             gradD = [[grad.copyto(grad.context) for grad in grads] for grads in discriminator._exec_group.grad_arrays]
 
@@ -172,7 +172,7 @@ def main():
 
             # update generator
             label[:] = 1
-            discriminator.forward(mx.io.DataBatch([batch.data[0], outG], [label]), is_train=True)
+            discriminator.forward(mx.io.DataBatch([batch.data[0], outG[1]], [label]), is_train=True)
             discriminator.backward()
             diffD = discriminator.get_input_grads()
             generator.backward([mx.nd.array([1.0], ctx=ctx), diffD])
