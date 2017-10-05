@@ -12,7 +12,7 @@ from symbols.pix2pix import get_symbol_generator, get_symbol_discriminator
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 # from core.visualize import visualize
-from core import metric
+# from core import metric
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train PIX2PIX')
