@@ -26,7 +26,7 @@ def visualize(real_A, real_B, fake_B, fname):
     ax2.imshow(real_B[0])
     ax2.set_title('Ground Truth')
     ax2.axis('off')
-    ax3 = fig.add_subplot(3, 1, 2)
+    ax3 = fig.add_subplot(3, 1, 3)
     ax3.imshow(fake_B[0])
     ax3.set_title('pix2pix')
     ax3.axis('off')
