@@ -63,7 +63,7 @@ def main():
 
     # ==============data==============
     train_data = pix2pixIter(config, shuffle=True, ctx=ctx)
-    print train_data.provide_data
+    # print train_data.provide_data
 
     label = mx.nd.zeros((batch_size,), ctx=ctx)
 

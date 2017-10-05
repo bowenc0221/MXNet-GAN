@@ -53,7 +53,7 @@ def get_symbol_generator():
     down_conv8 = mx.sym.Convolution(data=down_relu8, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                    no_bias=True, name='down_conv8')
     up_relu8 = mx.sym.Activation(data=down_conv8, act_type='relu', name='up_relu8')
-    up_conv8 = mx.sym.Deconvolution(data=up_relu8, kernel=(4, 4), stride=2, pad=(1, 1), num_filter=ngf * 8,
+    up_conv8 = mx.sym.Deconvolution(data=up_relu8, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                    no_bias=True, name='up_conv8')
     up_norm8 = mx.sym.BatchNorm(data=up_conv8, eps=eps, name='up_norm8')
 
@@ -162,7 +162,7 @@ def get_symbol_generator_instance():
     down_conv8 = mx.sym.Convolution(data=down_relu8, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                    no_bias=True, name='down_conv8')
     up_relu8 = mx.sym.Activation(data=down_conv8, act_type='relu', name='up_relu8')
-    up_conv8 = mx.sym.Deconvolution(data=up_relu8, kernel=(4, 4), stride=2, pad=(1, 1), num_filter=ngf * 8,
+    up_conv8 = mx.sym.Deconvolution(data=up_relu8, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                    no_bias=True, name='up_conv8')
     up_norm8 = mx.sym.InstanceNorm(data=up_conv8, eps=eps, name='up_norm8')
 
