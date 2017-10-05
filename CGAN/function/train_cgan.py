@@ -16,7 +16,7 @@ from core.visualize import visualize
 from core import metric
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train DCGAN')
+    parser = argparse.ArgumentParser(description='Train CGAN')
     # general
     parser.add_argument('--cfg', help='experiment configure file name', required=True, type=str)
 
@@ -29,7 +29,7 @@ def parse_args():
 
 args = parse_args()
 curr_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(curr_path, '../external/mxnet', config.MXNET_VERSION))
+sys.path.insert(0, os.path.join(curr_path, '../../external/mxnet', config.MXNET_VERSION))
 
 import shutil
 import numpy as np

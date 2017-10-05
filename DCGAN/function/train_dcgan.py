@@ -29,7 +29,7 @@ def parse_args():
 
 args = parse_args()
 curr_path = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(curr_path, '../external/mxnet', config.MXNET_VERSION))
+sys.path.insert(0, os.path.join(curr_path, '../../external/mxnet', config.MXNET_VERSION))
 
 import shutil
 import numpy as np
