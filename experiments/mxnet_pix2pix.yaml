@@ -7,7 +7,7 @@ fineSize: 256
 AtoB: False
 
 default:
-  frequent: 100
+  frequent: 1
   kvstore: device
 dataset:
   dataset: 'facades'
