@@ -122,42 +122,42 @@ def get_symbol_discriminator():
     # d1
     d1_conv = mx.sym.Convolution(data=AB, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf,
                                  name='d1_conv')
-    d1_relu = mx.sym.LeakyRelu(data=d1_conv, act_type='leaky', slope=0.2, name='d1_relu')
+    d1_relu = mx.sym.LeakyReLU(data=d1_conv, act_type='leaky', slope=0.2, name='d1_relu')
 
     # d2
     d2_conv = mx.sym.Convolution(data=d1_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 2,
                                  no_bias=True, name='d2_conv')
     d2_norm = mx.sym.BatchNorm(data=d2_conv, eps=eps, name='d2_norm')
-    d2_relu = mx.sym.LeakyRelu(data=d2_norm, act_type='leaky', slope=0.2, name='d2_relu')
+    d2_relu = mx.sym.LeakyReLU(data=d2_norm, act_type='leaky', slope=0.2, name='d2_relu')
 
     # d3
     d3_conv = mx.sym.Convolution(data=d2_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 4,
                                  no_bias=True, name='d3_conv')
     d3_norm = mx.sym.BatchNorm(data=d3_conv, eps=eps, name='d3_norm')
-    d3_relu = mx.sym.LeakyRelu(data=d3_norm, act_type='leaky', slope=0.2, name='d3_relu')
+    d3_relu = mx.sym.LeakyReLU(data=d3_norm, act_type='leaky', slope=0.2, name='d3_relu')
 
     # d4
     d4_conv = mx.sym.Convolution(data=d3_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 8,
                                  no_bias=True, name='d4_conv')
     d4_norm = mx.sym.BatchNorm(data=d4_conv, eps=eps, name='d4_norm')
-    d4_relu = mx.sym.LeakyRelu(data=d4_norm, act_type='leaky', slope=0.2, name='d4_relu')
+    d4_relu = mx.sym.LeakyReLU(data=d4_norm, act_type='leaky', slope=0.2, name='d4_relu')
 
     # d5
     d5_conv = mx.sym.Convolution(data=d4_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 8,
                                  no_bias=True, name='d5_conv')
     d5_norm = mx.sym.BatchNorm(data=d5_conv, eps=eps, name='d5_norm')
-    d5_relu = mx.sym.LeakyRelu(data=d5_norm, act_type='leaky', slope=0.2, name='d5_relu')
+    d5_relu = mx.sym.LeakyReLU(data=d5_norm, act_type='leaky', slope=0.2, name='d5_relu')
 
     # d6
     d6_conv = mx.sym.Convolution(data=d5_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 8,
                                  no_bias=True, name='d6_conv')
     d6_norm = mx.sym.BatchNorm(data=d6_conv, eps=eps, name='d6_norm')
-    d6_relu = mx.sym.LeakyRelu(data=d6_norm, act_type='leaky', slope=0.2, name='d6_relu')
+    d6_relu = mx.sym.LeakyReLU(data=d6_norm, act_type='leaky', slope=0.2, name='d6_relu')
 
     d7_conv = mx.sym.Convolution(data=d6_relu, kernel=(4, 4), stride=(1, 1), pad=(1, 1), num_filter=ndf * 8,
                                  no_bias=True, name='d7_conv')
     d7_norm = mx.sym.BatchNorm(data=d7_conv, eps=eps, name='d7_norm')
-    d7_relu = mx.sym.LeakyRelu(data=d7_norm, act_type='leaky', slope=0.2, name='d7_relu')
+    d7_relu = mx.sym.LeakyReLU(data=d7_norm, act_type='leaky', slope=0.2, name='d7_relu')
 
     d8_conv = mx.sym.Convolution(data=d7_relu, kernel=(4, 4), stride=(1, 1), pad=(1, 1), num_filter=1,
                                  name='d8_conv')
