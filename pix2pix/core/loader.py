@@ -109,8 +109,8 @@ class pix2pixIter(mx.io.DataIter):
         B = np.transpose(B[..., np.newaxis], (3, 2, 0, 1))
 
         if self.AtoB:
-            self.A = A.astype(np.float32) / (255.0 / 2) - 1.0
-            self.B = B.astype(np.float32) / (255.0 / 2) - 1.0
+            self.A = A.astype(np.float32) / (255.0 / 2.0) - 1.0
+            self.B = B.astype(np.float32) / (255.0 / 2.0) - 1.0
         else:
-            self.B = A.astype(np.float32) / (255.0 / 2) - 1.0
-            self.A = B.astype(np.float32) / (255.0 / 2) - 1.0
+            self.B = A.astype(np.float32) / (255.0 / 2.0) - 1.0
+            self.A = B.astype(np.float32) / (255.0 / 2.0) - 1.0
