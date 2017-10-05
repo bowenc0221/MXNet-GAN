@@ -68,7 +68,12 @@ def main():
 
     # =============Generator Module=============
     if batch_size == 1:
-        generatorSymbol = get_symbol_generator_instance_unet()
+        if config.network == 'autoencoder':
+            generatorSymbol = get_symbol_generator_instance_autoencoder()
+        elif config.network == 'unet':
+            generatorSymbol = get_symbol_generator_instance_unet()
+        else:
+            raise NotImplemented
     else:
         generatorSymbol = get_symbol_generator()
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)

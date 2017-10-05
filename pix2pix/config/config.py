@@ -20,6 +20,7 @@ config.RNG_SEED = 1
 config.loadSize = 286
 config.fineSize = 256
 config.AtoB = False
+config.network = 'autoencoder'
 
 # default training
 config.default = edict()
