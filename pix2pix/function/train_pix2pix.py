@@ -193,7 +193,7 @@ def main():
 
             t += 1
             if t % frequent == 0:
-                visualize(batch.data[0].asnumpy(), batch.data[0].asnumpy(), outG[0].asnumpy(), train_fig_prefix + '-train-%04d-%06d.png' % (epoch + 1, t))
+                visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(), train_fig_prefix + '-train-%04d-%06d.png' % (epoch + 1, t))
                 print 'Epoch[{}] Batch[{}] Time[{:.4f}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f} gL1: {:.4f}'.format(epoch, t, t_accumulate, mACC.get()[1], mG.get()[1], mD.get()[1], mL1.get()[1])
                 # logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1]))
                 t_accumulate = 0
