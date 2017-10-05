@@ -109,6 +109,115 @@ def get_symbol_generator():
 
     return group
 
+def get_symbol_generator_instance():
+    # without skip connection
+    ngf = 64
+    eps = 1e-5 + 1e-12
+    # encoder
+    real_A = mx.sym.Variable(name='A')
+    real_B = mx.sym.Variable(name='B')
+
+    # --- outer most ---
+    down_conv1 = mx.sym.Convolution(data=real_A, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf,
+                                    name='down_conv1')
+
+    # --- encoder 2 ----
+    down_relu2 = mx.sym.LeakyReLU(data=down_conv1, act_type='leaky', slope=0.2, name='down_relu2')
+    down_conv2 = mx.sym.Convolution(data=down_relu2, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 2,
+                                    no_bias=True, name='down_conv2')
+    down_norm2 = mx.sym.InstanceNorm(data=down_conv2, eps=eps, name='down_norm2')
+
+    # --- encoder 3 ----
+    down_relu3 = mx.sym.LeakyReLU(data=down_norm2, act_type='leaky', slope=0.2, name='down_relu3')
+    down_conv3 = mx.sym.Convolution(data=down_relu3, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 4,
+                                    no_bias=True, name='down_conv3')
+    down_norm3 = mx.sym.InstanceNorm(data=down_conv3, eps=eps, name='down_norm3')
+
+    # --- encoder 4 ----
+    down_relu4 = mx.sym.LeakyReLU(data=down_norm3, act_type='leaky', slope=0.2, name='down_relu4')
+    down_conv4 = mx.sym.Convolution(data=down_relu4, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
+                                    no_bias=True, name='down_conv4')
+    down_norm4 = mx.sym.InstanceNorm(data=down_conv4, eps=eps, name='down_norm4')
+
+    # --- encoder 5 ----
+    down_relu5 = mx.sym.LeakyReLU(data=down_norm4, act_type='leaky', slope=0.2, name='down_relu5')
+    down_conv5 = mx.sym.Convolution(data=down_relu5, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
+                                    no_bias=True, name='down_conv5')
+    down_norm5 = mx.sym.InstanceNorm(data=down_conv5, eps=eps, name='down_norm5')
+
+    # --- encoder 6 ----
+    down_relu6 = mx.sym.LeakyReLU(data=down_norm5, act_type='leaky', slope=0.2, name='down_relu6')
+    down_conv6 = mx.sym.Convolution(data=down_relu6, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
+                                    no_bias=True, name='down_conv6')
+    down_norm6 = mx.sym.InstanceNorm(data=down_conv6, eps=eps, name='down_norm6')
+
+    # --- encoder 7 ----
+    down_relu7 = mx.sym.LeakyReLU(data=down_norm6, act_type='leaky', slope=0.2, name='down_relu7')
+    down_conv7 = mx.sym.Convolution(data=down_relu7, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
+                                    no_bias=True, name='down_conv7')
+    down_norm7 = mx.sym.InstanceNorm(data=down_conv7, eps=eps, name='down_norm7')
+
+    # --- inner most ---
+    down_relu8 = mx.sym.LeakyReLU(data=down_norm7, act_type='leaky', slope=0.2, name='down_relu8')
+    down_conv8 = mx.sym.Convolution(data=down_relu8, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
+                                   no_bias=True, name='down_conv8')
+    up_relu8 = mx.sym.Activation(data=down_conv8, act_type='relu', name='up_relu8')
+    up_conv8 = mx.sym.Deconvolution(data=up_relu8, kernel=(4, 4), stride=2, pad=(1, 1), num_filter=ngf * 8,
+                                   no_bias=True, name='up_conv8')
+    up_norm8 = mx.sym.InstanceNorm(data=up_conv8, eps=eps, name='up_norm8')
+
+    # --- decoder 7 ----
+    up_relu7 = mx.sym.Activation(data=up_norm8, act_type='relu', name='up_relu7')
+    up_conv7 = mx.sym.Deconvolution(data=up_relu7, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
+                                    no_bias=True, name='up_conv7')
+    up_norm7 = mx.sym.InstanceNorm(data=up_conv7, eps=eps, name='up_norm7')
+    up_drop7 = mx.sym.Dropout(data=up_norm7, p=0.5, mode='always', name='up_drop7')
+
+    # --- decoder 6 ----
+    up_relu6 = mx.sym.Activation(data=up_drop7, act_type='relu', name='up_relu6')
+    up_conv6 = mx.sym.Deconvolution(data=up_relu6, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
+                                    no_bias=True, name='up_conv6')
+    up_norm6 = mx.sym.InstanceNorm(data=up_conv6, eps=eps, name='up_norm6')
+    up_drop6 = mx.sym.Dropout(data=up_norm6, p=0.5, mode='always', name='up_drop6')
+
+    # --- decoder 5 ----
+    up_relu5 = mx.sym.Activation(data=up_drop6, act_type='relu', name='up_relu5')
+    up_conv5 = mx.sym.Deconvolution(data=up_relu5, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
+                                    no_bias=True, name='up_conv5')
+    up_norm5 = mx.sym.InstanceNorm(data=up_conv5, eps=eps, name='up_norm5')
+    up_drop5 = mx.sym.Dropout(data=up_norm5, p=0.5, mode='always', name='up_drop5')
+
+    # --- decoder 4 ----
+    up_relu4 = mx.sym.Activation(data=up_drop5, act_type='relu', name='up_relu4')
+    up_conv4 = mx.sym.Deconvolution(data=up_relu4, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 4,
+                                    no_bias=True, name='up_conv4')
+    up_norm4 = mx.sym.InstanceNorm(data=up_conv4, eps=eps, name='up_norm4')
+
+    # --- decoder 3 ----
+    up_relu3 = mx.sym.Activation(data=up_norm4, act_type='relu', name='up_relu3')
+    up_conv3 = mx.sym.Deconvolution(data=up_relu3, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 2,
+                                    no_bias=True, name='up_conv3')
+    up_norm3 = mx.sym.InstanceNorm(data=up_conv3, eps=eps, name='up_norm3')
+
+    # --- decoder 2 ----
+    up_relu2 = mx.sym.Activation(data=up_norm3, act_type='relu', name='up_relu2')
+    up_conv2 = mx.sym.Deconvolution(data=up_relu2, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf,
+                                    no_bias=True, name='up_conv2')
+    up_norm2 = mx.sym.InstanceNorm(data=up_conv2, eps=eps, name='up_norm2')
+
+    # --- outer most ---
+    up_relu1 = mx.sym.Activation(data=up_norm2, act_type='relu', name='up_relu1')
+    up_conv1 = mx.sym.Deconvolution(data=up_relu1, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=3,
+                                    name='up_conv1')
+    up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')
+
+    l1_loss_ = mx.sym.abs(up_tanh - real_B)
+    l1_loss = mx.sym.MakeLoss(l1_loss_, normalization='batch')
+
+    group = mx.sym.Group([l1_loss, up_tanh])
+
+    return group
+
 def get_symbol_discriminator():
     ndf = 64
     eps = 1e-5 + 1e-12

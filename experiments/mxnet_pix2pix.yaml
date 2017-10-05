@@ -1,5 +1,5 @@
 ---
-MXNET_VERSION: "v0.10.0.pix2pix"
+MXNET_VERSION: "v0.11.1"
 output_path: "./output/pix2pix"
 gpus: '1'
 loadSize: 286

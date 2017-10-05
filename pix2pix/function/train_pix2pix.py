@@ -29,7 +29,7 @@ import shutil
 import numpy as np
 import mxnet as mx
 
-from symbols.pix2pix import get_symbol_generator, get_symbol_discriminator
+from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance, get_symbol_discriminator
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 # from core.visualize import visualize
@@ -75,7 +75,10 @@ def main():
     # logger.info('training config:{}\n'.format(pprint.pformat(config)))
     #
     # =============Generator Module=============
-    generatorSymbol = get_symbol_generator()
+    if batch_size == 1:
+        generatorSymbol = get_symbol_generator_instance()
+    else:
+        generatorSymbol = get_symbol_generator()
     # debug = True
     # if debug:
     #     generatorGroup = generatorSymbol.get_internals()
