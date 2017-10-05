@@ -27,5 +27,5 @@ class PIX2PIXScheduler(LRScheduler):
         while num_update > self.step:
             self.step += 1
             self.base_lr -= self.dlr
-            print self.base_lr
+            # print self.base_lr
         return self.base_lr
