@@ -175,7 +175,8 @@ def main():
             discriminator.forward(mx.io.DataBatch([batch.data[0], outG[1]], [label]), is_train=True)
             discriminator.backward()
             diffD = discriminator.get_input_grads()
-            generator.backward([mx.nd.array([1.0], ctx=ctx), diffD])
+            # generator.backward([mx.nd.array([1.0], ctx=ctx), diffD])
+            generator.backward(diffD)
             generator.update()
 
             # mG.update([label], discriminator.get_outputs())
