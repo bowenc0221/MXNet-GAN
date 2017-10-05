@@ -69,9 +69,9 @@ def main():
     # =============Generator Module=============
     if batch_size == 1:
         if config.network == 'autoencoder':
-            generatorSymbol = get_symbol_generator_instance_autoencoder()
+            generatorSymbol = get_symbol_generator_instance_autoencoder(config)
         elif config.network == 'unet':
-            generatorSymbol = get_symbol_generator_instance_unet()
+            generatorSymbol = get_symbol_generator_instance_unet(config)
         else:
             raise NotImplemented
     else:
