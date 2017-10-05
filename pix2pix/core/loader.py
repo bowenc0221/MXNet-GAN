@@ -9,6 +9,7 @@ class pix2pixIter(mx.io.DataIter):
         self.config = config
         self.dataset = config.dataset.dataset  # name of dataset
         self.imageset = config.dataset.imageset  # name of image name text file
+        self.testset = config.dataset.testset
         self.root = os.path.join(config.dataset.root, config.dataset.dataset)  # path to store image name text file
         self.image_root = os.path.join(config.dataset.image_root, config.dataset.dataset)  # path to jpeg file
 
@@ -74,7 +75,10 @@ class pix2pixIter(mx.io.DataIter):
             return 0
 
     def _load_image_path(self):
-        fname = os.path.join(self.root, self.imageset + '.txt')
+        if self.is_train:
+            fname = os.path.join(self.root, self.imageset + '.txt')
+        else:
+            fname = os.path.join(self.root, self.testset + '.txt')
         assert os.path.exists(fname), 'Path does not exist: {}'.format(fname)
         with open(fname) as f:
             lines = [x.strip() for x in f.readlines()]

@@ -33,6 +33,7 @@ config.dataset.dataset = 'facades'
 config.dataset.root = './data'
 config.dataset.imageset = 'train'
 config.dataset.image_root = './datasets'
+config.dataset.testset = 'val'
 
 config.TRAIN = edict()
 
