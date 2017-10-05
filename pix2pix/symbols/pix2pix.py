@@ -113,7 +113,7 @@ def get_symbol_generator():
 
     return group
 
-def get_symbol_generator_instance_autoencoder():
+def get_symbol_generator_instance_autoencoder(cfg):
     # without skip connection
     ngf = 64
     eps = 1e-5 + 1e-12
@@ -216,13 +216,13 @@ def get_symbol_generator_instance_autoencoder():
     up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')
 
     l1_loss_ = mx.sym.abs(up_tanh - real_B)
-    l1_loss = mx.sym.MakeLoss(l1_loss_, normalization='batch')
+    l1_loss = mx.sym.MakeLoss(l1_loss_, normalization='batch', grad_scale=cfg.TRAIN.lambda_l1)
 
     group = mx.sym.Group([l1_loss, up_tanh])
 
     return group
 
-def get_symbol_generator_instance_unet():
+def get_symbol_generator_instance_unet(cfg):
     # without skip connection
     ngf = 64
     eps = 1e-5 + 1e-12
@@ -339,7 +339,7 @@ def get_symbol_generator_instance_unet():
     up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')
 
     l1_loss_ = mx.sym.abs(up_tanh - real_B)
-    l1_loss = mx.sym.MakeLoss(l1_loss_, normalization='batch')
+    l1_loss = mx.sym.MakeLoss(l1_loss_, normalization='batch', grad_scale=cfg.TRAIN.lambda_l1)
 
     group = mx.sym.Group([l1_loss, up_tanh])
 
