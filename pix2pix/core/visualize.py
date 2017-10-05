@@ -32,3 +32,4 @@ def visualize(real_A, real_B, fake_B, fname):
     ax3.axis('off')
     # plt.show()
     plt.savefig(fname)
+    plt.close()
