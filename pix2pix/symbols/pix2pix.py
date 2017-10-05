@@ -107,7 +107,7 @@ def get_symbol_generator():
     up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')
 
     l1_loss_ = mx.sym.abs(up_tanh - real_B)
-    l1_loss = mx.sym.MakeLoss(l1_loss_, normalization='batch')
+    l1_loss = mx.sym.MakeLoss(l1_loss_)
 
     group = mx.sym.Group([l1_loss, up_tanh])
 
@@ -216,7 +216,7 @@ def get_symbol_generator_instance_autoencoder(cfg):
     up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')
 
     l1_loss_ = mx.sym.abs(up_tanh - real_B)
-    l1_loss = mx.sym.MakeLoss(l1_loss_, normalization='batch', grad_scale=cfg.TRAIN.lambda_l1)
+    l1_loss = mx.sym.MakeLoss(l1_loss_, grad_scale=cfg.TRAIN.lambda_l1)
 
     group = mx.sym.Group([l1_loss, up_tanh])
 
@@ -339,7 +339,7 @@ def get_symbol_generator_instance_unet(cfg):
     up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')
 
     l1_loss_ = mx.sym.abs(up_tanh - real_B)
-    l1_loss = mx.sym.MakeLoss(l1_loss_, normalization='batch', grad_scale=cfg.TRAIN.lambda_l1)
+    l1_loss = mx.sym.MakeLoss(l1_loss_, grad_scale=cfg.TRAIN.lambda_l1)
 
     group = mx.sym.Group([l1_loss, up_tanh])
 

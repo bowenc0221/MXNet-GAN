@@ -35,6 +35,7 @@ from core.create_logger import create_logger
 from core.loader import pix2pixIter
 from core.visualize import visualize
 from core import metric
+from core.lr_scheduler import PIX2PIXScheduler
 
 
 def main():
@@ -65,6 +66,13 @@ def main():
     # ==============data==============
     train_data = pix2pixIter(config, shuffle=True, ctx=ctx)
     # print train_data.provide_data
+
+    step = config.TRAIN.step_epoch * train_data.size / batch_size
+    step_decay = config.TRAIN.decay_epoch * train_data.size / batch_size
+    if config.TRAIN.end_epoch == (config.TRAIN.step_epoch + config.TRAIN.decay_epoch):
+        lr_scheduler = PIX2PIXScheduler(step=int(step), step_decay=int(step_decay), base_lr=lr)
+    else:
+        lr_scheduler = None
 
     label = mx.nd.zeros((batch_size,), ctx=ctx)
 
@@ -98,12 +106,21 @@ def main():
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
     generator.bind(data_shapes=train_data.provide_data)
     generator.init_params(initializer=mx.init.Normal(sigma))
-    generator.init_optimizer(
-        optimizer='adam',
-        optimizer_params={
-            'learning_rate': lr,
-            'beta1': beta1,
-        })
+    if lr_scheduler is not None:
+        generator.init_optimizer(
+            optimizer='adam',
+            optimizer_params={
+                'learning_rate': lr,
+                'lr_scheduler': lr_scheduler,
+                'beta1': beta1,
+            })
+    else:
+        generator.init_optimizer(
+            optimizer='adam',
+            optimizer_params={
+                'learning_rate': lr,
+                'beta1': beta1,
+            })
     mods = [generator]
 
     # =============Discriminator Module=============
@@ -123,12 +140,21 @@ def main():
                        label_shapes=[('label', (batch_size,))],
                        inputs_need_grad=True)
     discriminator.init_params(initializer=mx.init.Normal(sigma))
-    discriminator.init_optimizer(
-        optimizer='adam',
-        optimizer_params={
-            'learning_rate': lr,
-            'beta1': beta1,
-        })
+    if lr_scheduler is not None:
+        discriminator.init_optimizer(
+            optimizer='adam',
+            optimizer_params={
+                'learning_rate': lr,
+                'lr_scheduler': lr_scheduler,
+                'beta1': beta1,
+            })
+    else:
+        discriminator.init_optimizer(
+            optimizer='adam',
+            optimizer_params={
+                'learning_rate': lr,
+                'beta1': beta1,
+            })
     mods.append(discriminator)
 
     # metric

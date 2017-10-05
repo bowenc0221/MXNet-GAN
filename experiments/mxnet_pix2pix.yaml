@@ -15,10 +15,14 @@ dataset:
   root: './data'
   imageset: 'train'
   image_root: './datasets'
+  testset: 'val'
 TRAIN:
   lr: 0.0002
   beta1: 0.5
-  end_epoch: 1
+  end_epoch: 2
+  step_epoch: 1
+  decay_epoch: 1
+  lambda_l1: 100
   model_prefix: 'pix2pix'
   epoch_end_plot_figure: True
   batch_end_plot_figure: True

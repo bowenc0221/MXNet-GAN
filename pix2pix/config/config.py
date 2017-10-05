@@ -46,8 +46,11 @@ config.TRAIN.lr_factor = 0.1
 config.TRAIN.momentum = 0.9
 config.TRAIN.wd = 0.0005
 config.TRAIN.begin_epoch = 0
-config.TRAIN.end_epoch = 0
+config.TRAIN.end_epoch = 200
 config.TRAIN.model_prefix = ''
+
+config.TRAIN.step_epoch = 100
+config.TRAIN.decay_epoch = 100
 
 # whether resume training
 config.TRAIN.RESUME = False
