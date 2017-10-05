@@ -36,8 +36,8 @@ config.dataset.image_root = './datasets'
 config.TRAIN = edict()
 
 config.TRAIN.optimizer = 'adam'
-config.TRAIN.lr = 0.001
-config.TRAIN.beta1 = 0.9
+config.TRAIN.lr = 0.0002
+config.TRAIN.beta1 = 0.5
 config.TRAIN.beta2 = 0.999
 config.TRAIN.lr_step = ''
 config.TRAIN.lr_factor = 0.1

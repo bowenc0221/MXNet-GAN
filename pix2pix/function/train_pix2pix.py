@@ -33,7 +33,7 @@ from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance,
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 # from core.visualize import visualize
-# from core import metric
+from core import metric
 
 
 def main():
@@ -131,9 +131,10 @@ def main():
     # mACC = mx.metric.CustomMetric(metric.facc)
     # test_metric = metric.CrossEntropyMetric()
     # test_metric.reset()
-    # mG = metric.CrossEntropyMetric()
-    # mD = metric.CrossEntropyMetric()
-    # mACC = metric.AccMetric()
+    mG = metric.CrossEntropyMetric()
+    mD = metric.CrossEntropyMetric()
+    mACC = metric.AccMetric()
+    mL1 = metric.L1LossMetric()
 
     # =============train===============
     for epoch in range(config.TRAIN.end_epoch):
@@ -155,8 +156,8 @@ def main():
             discriminator.backward()
             gradD = [[grad.copyto(grad.context) for grad in grads] for grads in discriminator._exec_group.grad_arrays]
 
-            # discriminator.update_metric(mD, [label])
-            # discriminator.update_metric(mACC, [label])
+            discriminator.update_metric(mD, [label])
+            discriminator.update_metric(mACC, [label])
             # test_metric.update([label], discriminator.get_outputs())
 
             # update discriminator on real
@@ -169,8 +170,8 @@ def main():
                     gradr += gradf
             discriminator.update()
 
-            # discriminator.update_metric(mD, [label])
-            # discriminator.update_metric(mACC, [label])
+            discriminator.update_metric(mD, [label])
+            discriminator.update_metric(mACC, [label])
             # test_metric.update([label], discriminator.get_outputs())
 
             # update generator
@@ -182,7 +183,8 @@ def main():
             generator.backward([mx.nd.array([1.0], ctx=ctx), diffD[1]])
             generator.update()
 
-            # mG.update([label], discriminator.get_outputs())
+            mG.update([label], discriminator.get_outputs())
+            mL1.update(None, outG)
 
             t += 1
             # if t % frequent == 0:
