@@ -99,16 +99,16 @@ def main():
 
     # =============Discriminator Module=============
     discriminatorSymbol = get_symbol_discriminator()
-    debug = True
-    if debug:
-        generatorGroup = discriminatorSymbol.get_internals()
-        name_list = generatorGroup.list_outputs()
-        out_name = []
-        for name in name_list:
-            if 'output' in name:
-                out_name += [generatorGroup[name]]
-        out_group = mx.sym.Group(out_name)
-        out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256))
+    # debug = True
+    # if debug:
+    #     generatorGroup = discriminatorSymbol.get_internals()
+    #     name_list = generatorGroup.list_outputs()
+    #     out_name = []
+    #     for name in name_list:
+    #         if 'output' in name:
+    #             out_name += [generatorGroup[name]]
+    #     out_group = mx.sym.Group(out_name)
+    #     out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256))
     discriminator = mx.mod.Module(symbol=discriminatorSymbol, data_names=('A', 'B',), label_names=('label',), context=ctx)
     discriminator.bind(data_shapes=train_data.provide_data,
                        label_shapes=[('label', (batch_size,))],
@@ -143,12 +143,12 @@ def main():
             generator.forward(batch, is_train=True)
             outG = generator.get_outputs()
 
-            fake_batch = batch.copy()
-            fake_batch.data[1] = outG
+            # fake_batch = batch.copy()
+            # fake_batch.data[1] = outG
 
             # update discriminator on fake
             label[:] = 0
-            discriminator.forward(mx.io.DataBatch(fake_batch.data, [label]), is_train=True)
+            discriminator.forward(mx.io.DataBatch([batch.data[0], outG], [label]), is_train=True)
             discriminator.backward()
             gradD = [[grad.copyto(grad.context) for grad in grads] for grads in discriminator._exec_group.grad_arrays]
 
@@ -172,7 +172,7 @@ def main():
 
             # update generator
             label[:] = 1
-            discriminator.forward(mx.io.DataBatch(fake_batch.data, [label]), is_train=True)
+            discriminator.forward(mx.io.DataBatch([batch.data[0], outG], [label]), is_train=True)
             discriminator.backward()
             diffD = discriminator.get_input_grads()
             generator.backward([mx.nd.array([1.0], ctx=ctx), diffD])
