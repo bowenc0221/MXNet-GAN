@@ -108,7 +108,7 @@ def main():
             if 'output' in name:
                 out_name += [generatorGroup[name]]
         out_group = mx.sym.Group(out_name)
-        out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256), label=(1,))
+        out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256))
     discriminator = mx.mod.Module(symbol=discriminatorSymbol, data_names=('A', 'B',), label_names=('label',), context=ctx)
     discriminator.bind(data_shapes=train_data.provide_data,
                        label_shapes=[('label', (batch_size,))],
