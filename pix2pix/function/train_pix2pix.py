@@ -7,6 +7,7 @@ import os
 import sys
 import matplotlib
 matplotlib.use('Agg')
+import time
 from config.config import config, update_config
 
 def parse_args():
@@ -136,6 +137,8 @@ def main():
     mACC = metric.AccMetric()
     mL1 = metric.L1LossMetric()
 
+    t_accumulate = 0
+
     # =============train===============
     for epoch in range(config.TRAIN.end_epoch):
         train_data.reset()
@@ -143,6 +146,8 @@ def main():
         # mG.reset()
         # mD.reset()
         for t, batch in enumerate(train_data):
+
+            t_start = time.time()
 
             generator.forward(batch, is_train=True)
             outG = generator.get_outputs()
@@ -186,11 +191,14 @@ def main():
             mG.update([label], discriminator.get_outputs())
             mL1.update(None, outG)
 
+            t_accumulate += time.time() - t_start
+
             t += 1
-            # if t % frequent == 0:
+            if t % frequent == 0:
                 # visualize(outG[0].asnumpy(), batch.data[0].asnumpy())
-                # print 'Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1])
+                print 'Epoch[{}] Batch[{}] Time[{:.4f}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f} gL1: {:.4f}'.format(epoch, t, t_accumulate, mACC.get()[1], mG.get()[1], mD.get()[1], mL1.get()[1])
                 # logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1]))
+                t_accumulate = 0
 
         if check_point:
             print('Saving...')
