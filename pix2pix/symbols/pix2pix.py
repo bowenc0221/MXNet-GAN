@@ -154,7 +154,7 @@ def get_symbol_discriminator():
     d6_norm = mx.sym.BatchNorm(data=d6_conv, eps=eps, name='d6_norm')
     d6_relu = mx.sym.LeakyReLU(data=d6_norm, act_type='leaky', slope=0.2, name='d6_relu')
 
-    d7_conv = mx.sym.Convolution(data=d6_relu, kernel=(4, 4), stride=(1, 1), pad=(1, 1), num_filter=ndf * 8,
+    d7_conv = mx.sym.Convolution(data=d6_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 8,
                                  no_bias=True, name='d7_conv')
     d7_norm = mx.sym.BatchNorm(data=d7_conv, eps=eps, name='d7_norm')
     d7_relu = mx.sym.LeakyReLU(data=d7_norm, act_type='leaky', slope=0.2, name='d7_relu')
