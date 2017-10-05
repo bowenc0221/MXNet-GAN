@@ -179,7 +179,7 @@ def main():
             discriminator.backward()
             diffD = discriminator.get_input_grads()
             # generator.backward([mx.nd.array([1.0], ctx=ctx), diffD])
-            generator.backward([None, diffD[1]])
+            generator.backward([mx.nd.array([1.0], ctx=ctx), diffD[1]])
             generator.update()
 
             # mG.update([label], discriminator.get_outputs())
