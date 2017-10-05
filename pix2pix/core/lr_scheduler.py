@@ -24,7 +24,8 @@ class PIX2PIXScheduler(LRScheduler):
         num_update: int
             the maximal number of updates applied to a weight.
         """
-        if num_update > self.step:
+        while num_update > self.step:
+            self.step += 1
             self.base_lr -= self.dlr
             print self.base_lr
         return self.base_lr
