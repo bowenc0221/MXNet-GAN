@@ -91,10 +91,10 @@ def get_symbol_generator():
     up_norm3 = mx.sym.BatchNorm(data=up_conv3, eps=eps, name='up_norm3')
 
     # --- decoder 2 ----
-    up_relu2 = mx.sym.Activation(data=up_norm3, act_type='relu', name='up_relu3')
+    up_relu2 = mx.sym.Activation(data=up_norm3, act_type='relu', name='up_relu2')
     up_conv2 = mx.sym.Deconvolution(data=up_relu2, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf,
-                                    no_bias=True, name='up_conv3')
-    up_norm2 = mx.sym.BatchNorm(data=up_conv2, eps=eps, name='up_norm3')
+                                    no_bias=True, name='up_conv2')
+    up_norm2 = mx.sym.BatchNorm(data=up_conv2, eps=eps, name='up_norm2')
 
     # --- outer most ---
     up_relu1 = mx.sym.Activation(data=up_norm2, act_type='relu', name='up_relu1')
