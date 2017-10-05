@@ -104,7 +104,7 @@ def get_symbol_generator():
     up_relu1 = mx.sym.Activation(data=up_norm2, act_type='relu', name='up_relu1')
     up_conv1 = mx.sym.Deconvolution(data=up_relu1, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=3,
                                     name='up_conv1')
-    up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')
+    up_tanh = mx.sym.Activation(up_conv1, name='up_tanh', act_type='tanh')
 
     l1_loss_ = mx.sym.abs(up_tanh - real_B)
     l1_loss = mx.sym.MakeLoss(l1_loss_)
@@ -213,7 +213,7 @@ def get_symbol_generator_instance_autoencoder(cfg):
     up_relu1 = mx.sym.Activation(data=up_norm2, act_type='relu', name='up_relu1')
     up_conv1 = mx.sym.Deconvolution(data=up_relu1, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=3,
                                     name='up_conv1')
-    up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')
+    up_tanh = mx.sym.Activation(up_conv1, name='up_tanh', act_type='tanh')
 
     l1_loss_ = mx.sym.abs(up_tanh - real_B)
     l1_loss = mx.sym.MakeLoss(l1_loss_, grad_scale=cfg.TRAIN.lambda_l1)
@@ -336,7 +336,7 @@ def get_symbol_generator_instance_unet(cfg):
     up_relu1 = mx.sym.Activation(data=skip_1, act_type='relu', name='up_relu1')
     up_conv1 = mx.sym.Deconvolution(data=up_relu1, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=3,
                                     name='up_conv1')
-    up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')
+    up_tanh = mx.sym.Activation(up_conv1, name='up_tanh', act_type='tanh')
 
     l1_loss_ = mx.sym.abs(up_tanh - real_B)
     l1_loss = mx.sym.MakeLoss(l1_loss_, grad_scale=cfg.TRAIN.lambda_l1)
