@@ -56,7 +56,7 @@ def main():
     np.random.seed(config.RNG_SEED)
 
     # ==============data==============
-    test_data = pix2pixIter(config, shuffle=False, ctx=ctx)
+    test_data = pix2pixIter(config, shuffle=False, ctx=ctx, is_train=False)
 
     # print config
     pprint.pprint(config)
