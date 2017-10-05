@@ -280,58 +280,60 @@ def get_symbol_generator_instance_unet():
     up_norm8 = mx.sym.InstanceNorm(data=up_conv8, eps=eps, name='up_norm8')
 
     # --- decoder 7 ----
-    up_relu7 = mx.sym.Activation(data=up_norm8, act_type='relu', name='up_relu7')
+    skip_7 = mx.sym.concat(down_norm7, up_norm8, dim=1, name='skip_7')
+
+    up_relu7 = mx.sym.Activation(data=skip_7, act_type='relu', name='up_relu7')
     up_conv7 = mx.sym.Deconvolution(data=up_relu7, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv7')
     up_norm7 = mx.sym.InstanceNorm(data=up_conv7, eps=eps, name='up_norm7')
     up_drop7 = mx.sym.Dropout(data=up_norm7, p=0.5, mode='always', name='up_drop7')
 
-    skip_7 = mx.sym.concat(down_norm7, up_drop7, dim=1, name='skip_7')
-
     # --- decoder 6 ----
-    up_relu6 = mx.sym.Activation(data=skip_7, act_type='relu', name='up_relu6')
+    skip_6 = mx.sym.concat(down_norm6, up_drop7, dim=1, name='skip_6')
+
+    up_relu6 = mx.sym.Activation(data=skip_6, act_type='relu', name='up_relu6')
     up_conv6 = mx.sym.Deconvolution(data=up_relu6, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv6')
     up_norm6 = mx.sym.InstanceNorm(data=up_conv6, eps=eps, name='up_norm6')
     up_drop6 = mx.sym.Dropout(data=up_norm6, p=0.5, mode='always', name='up_drop6')
 
-    skip_6 = mx.sym.concat(down_norm6, up_drop6, dim=1, name='skip_6')
-
     # --- decoder 5 ----
-    up_relu5 = mx.sym.Activation(data=skip_6, act_type='relu', name='up_relu5')
+    skip_5 = mx.sym.concat(down_norm5, up_drop6, dim=1, name='skip_5')
+
+    up_relu5 = mx.sym.Activation(data=skip_5, act_type='relu', name='up_relu5')
     up_conv5 = mx.sym.Deconvolution(data=up_relu5, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv5')
     up_norm5 = mx.sym.InstanceNorm(data=up_conv5, eps=eps, name='up_norm5')
     up_drop5 = mx.sym.Dropout(data=up_norm5, p=0.5, mode='always', name='up_drop5')
 
-    skip_5 = mx.sym.concat(down_norm5, up_drop5, dim=1, name='skip_5')
-
     # --- decoder 4 ----
-    up_relu4 = mx.sym.Activation(data=skip_5, act_type='relu', name='up_relu4')
+    skip_4 = mx.sym.concat(down_norm4, up_drop5, dim=1, name='skip_4')
+
+    up_relu4 = mx.sym.Activation(data=skip_4, act_type='relu', name='up_relu4')
     up_conv4 = mx.sym.Deconvolution(data=up_relu4, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 4,
                                     no_bias=True, name='up_conv4')
     up_norm4 = mx.sym.InstanceNorm(data=up_conv4, eps=eps, name='up_norm4')
 
-    skip_4 = mx.sym.concat(down_norm4, up_norm4, dim=1, name='skip_4')
-
     # --- decoder 3 ----
-    up_relu3 = mx.sym.Activation(data=skip_4, act_type='relu', name='up_relu3')
+    skip_3 = mx.sym.concat(down_norm3, up_norm4, dim=1, name='skip_3')
+
+    up_relu3 = mx.sym.Activation(data=skip_3, act_type='relu', name='up_relu3')
     up_conv3 = mx.sym.Deconvolution(data=up_relu3, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 2,
                                     no_bias=True, name='up_conv3')
     up_norm3 = mx.sym.InstanceNorm(data=up_conv3, eps=eps, name='up_norm3')
 
-    skip_3 = mx.sym.concat(down_norm3, up_norm3, dim=1, name='skip_3')
-
     # --- decoder 2 ----
-    up_relu2 = mx.sym.Activation(data=skip_3, act_type='relu', name='up_relu2')
+    skip_2 = mx.sym.concat(down_norm2, up_norm3, dim=1, name='skip_2')
+
+    up_relu2 = mx.sym.Activation(data=skip_2, act_type='relu', name='up_relu2')
     up_conv2 = mx.sym.Deconvolution(data=up_relu2, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf,
                                     no_bias=True, name='up_conv2')
     up_norm2 = mx.sym.InstanceNorm(data=up_conv2, eps=eps, name='up_norm2')
 
-    skip_2 = mx.sym.concat(down_norm2, up_norm2, dim=1, name='skip_2')
-
     # --- outer most ---
-    up_relu1 = mx.sym.Activation(data=skip_2, act_type='relu', name='up_relu1')
+    skip_1 = mx.sym.concat(down_conv1, up_norm2, dim=1, name='skip_1')
+
+    up_relu1 = mx.sym.Activation(data=skip_1, act_type='relu', name='up_relu1')
     up_conv1 = mx.sym.Deconvolution(data=up_relu1, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=3,
                                     name='up_conv1')
     up_tanh = mx.sym.tanh(data=up_conv1, name='up_tanh')

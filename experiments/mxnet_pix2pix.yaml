@@ -5,7 +5,7 @@ gpus: '1'
 loadSize: 286
 fineSize: 256
 AtoB: False
-network: 'autoencoder'
+network: 'unet'
 
 default:
   frequent: 10
