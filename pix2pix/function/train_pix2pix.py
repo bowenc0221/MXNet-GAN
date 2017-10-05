@@ -86,15 +86,15 @@ def main():
     else:
         generatorSymbol = get_symbol_generator()
     debug = True
-    if debug:
-        generatorGroup = generatorSymbol.get_internals()
-        name_list = generatorGroup.list_outputs()
-        out_name = []
-        for name in name_list:
-            if 'output' in name:
-                out_name += [generatorGroup[name]]
-        out_group = mx.sym.Group(out_name)
-        out_shapes = out_group.infer_shape(A=(1, 3, 256, 256))
+    # if debug:
+    #     generatorGroup = generatorSymbol.get_internals()
+    #     name_list = generatorGroup.list_outputs()
+    #     out_name = []
+    #     for name in name_list:
+    #         if 'output' in name:
+    #             out_name += [generatorGroup[name]]
+    #     out_group = mx.sym.Group(out_name)
+    #     out_shapes = out_group.infer_shape(A=(1, 3, 256, 256))
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
     generator.bind(data_shapes=train_data.provide_data)
     generator.init_params(initializer=mx.init.Normal(sigma))
@@ -198,15 +198,17 @@ def main():
 
             t += 1
             if t % frequent == 0:
-                # visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(), train_fig_prefix + '-train-%04d-%06d.png' % (epoch + 1, t))
+                if config.TRAIN.batch_end_plot_figure:
+                    visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(), train_fig_prefix + '-train-%04d-%06d.png' % (epoch + 1, t))
                 print 'Epoch[{}] Batch[{}] Time[{:.4f}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f} gL1: {:.4f}'.format(epoch, t, t_accumulate, mACC.get()[1], mG.get()[1], mD.get()[1], mL1.get()[1])
-                # logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1]))
+                logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1]))
                 t_accumulate = 0
 
         if check_point:
             print('Saving...')
-            visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(),
-                      train_fig_prefix + '-train-%04d.png' % (epoch + 1))
+            if config.TRAIN.epoch_end_plot_figure:
+                visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(),
+                          train_fig_prefix + '-train-%04d.png' % (epoch + 1))
             generator.save_params(prefix + '-generator-%04d.params' % (epoch + 1))
             discriminator.save_params(prefix + '-discriminator-%04d.params' % (epoch + 1))
 

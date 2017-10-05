@@ -20,5 +20,7 @@ TRAIN:
   beta1: 0.5
   end_epoch: 1
   model_prefix: 'pix2pix'
+  epoch_end_plot_figure: True
+  batch_end_plot_figure: True
 TEST:
   TEST_EPOCH: 1

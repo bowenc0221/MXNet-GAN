@@ -56,6 +56,9 @@ config.TRAIN.FLIP = True
 # batch size
 config.TRAIN.BATCH_SIZE = 1
 
+config.TRAIN.epoch_end_plot_figure = True
+config.TRAIN.batch_end_plot_figure = False
+
 config.TEST = edict()
 
 config.TEST.TEST_EPOCH = 0
