@@ -57,6 +57,8 @@ class pix2pixIter(mx.io.DataIter):
                                    label=self.getlabel(),
                                    pad=self.getpad(), index=self.getindex(),
                                    provide_data=self.provide_data, provide_label=self.provide_label)
+        else:
+            raise StopIteration
 
     def getindex(self):
         return self.cur / self.batch_size
