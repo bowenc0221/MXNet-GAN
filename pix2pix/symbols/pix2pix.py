@@ -1,3 +1,7 @@
+# Symbols for pix2pix
+# Generator: learn A -> B
+# Discriminator: (A, B) -> real/fake
+
 import mxnet as mx
 
 def get_symbol_generator():

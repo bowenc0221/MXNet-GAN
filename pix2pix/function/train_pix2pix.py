@@ -33,7 +33,7 @@ import mxnet as mx
 from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance, get_symbol_discriminator
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
-# from core.visualize import visualize
+from core.visualize import visualize
 from core import metric
 
 
@@ -127,11 +127,6 @@ def main():
     mods.append(discriminator)
 
     # metric
-    # mG = mx.metric.CustomMetric(metric.fentropy)
-    # mD = mx.metric.CustomMetric(metric.fentropy)
-    # mACC = mx.metric.CustomMetric(metric.facc)
-    # test_metric = metric.CrossEntropyMetric()
-    # test_metric.reset()
     mG = metric.CrossEntropyMetric()
     mD = metric.CrossEntropyMetric()
     mACC = metric.AccMetric()
@@ -142,20 +137,21 @@ def main():
     # =============train===============
     for epoch in range(config.TRAIN.end_epoch):
         train_data.reset()
-        # mACC.reset()
-        # mG.reset()
-        # mD.reset()
+        mACC.reset()
+        mG.reset()
+        mD.reset()
+        mL1.reset()
         for t, batch in enumerate(train_data):
 
             t_start = time.time()
 
+            # generator input real A, output fake B
             generator.forward(batch, is_train=True)
             outG = generator.get_outputs()
 
-            # fake_batch = batch.copy()
-            # fake_batch.data[1] = outG
-
             # update discriminator on fake
+            # discriminator input real A and fake B
+            # want discriminator to predict fake (0)
             label[:] = 0
             discriminator.forward(mx.io.DataBatch([batch.data[0], outG[1]], [label]), is_train=True)
             discriminator.backward()
@@ -163,9 +159,10 @@ def main():
 
             discriminator.update_metric(mD, [label])
             discriminator.update_metric(mACC, [label])
-            # test_metric.update([label], discriminator.get_outputs())
 
             # update discriminator on real
+            # discriminator input real A and real B
+            # want discriminator to predict real (1)
             label[:] = 1
             batch.label = [label]
             discriminator.forward(batch, is_train=True)
@@ -177,14 +174,15 @@ def main():
 
             discriminator.update_metric(mD, [label])
             discriminator.update_metric(mACC, [label])
-            # test_metric.update([label], discriminator.get_outputs())
 
             # update generator
+            # discriminator input real A and fake B
+            # want discriminator to predict real (1)
             label[:] = 1
             discriminator.forward(mx.io.DataBatch([batch.data[0], outG[1]], [label]), is_train=True)
             discriminator.backward()
             diffD = discriminator.get_input_grads()
-            # generator.backward([mx.nd.array([1.0], ctx=ctx), diffD])
+            # loss does not need output gradient
             generator.backward([mx.nd.array([1.0], ctx=ctx), diffD[1]])
             generator.update()
 
@@ -195,7 +193,7 @@ def main():
 
             t += 1
             if t % frequent == 0:
-                # visualize(outG[0].asnumpy(), batch.data[0].asnumpy())
+                visualize(batch.data[0].asnumpy(), batch.data[0].asnumpy(), outG[0].asnumpy(), train_fig_prefix + '-train-%04d-%06d.png' % (epoch + 1, t))
                 print 'Epoch[{}] Batch[{}] Time[{:.4f}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f} gL1: {:.4f}'.format(epoch, t, t_accumulate, mACC.get()[1], mG.get()[1], mD.get()[1], mL1.get()[1])
                 # logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1]))
                 t_accumulate = 0
