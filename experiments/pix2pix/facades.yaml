@@ -1,0 +1,23 @@
+---
+MXNET_VERSION: "v0.11.1"
+output_path: "./output/pix2pix"
+gpus: '1'
+loadSize: 286
+fineSize: 256
+AtoB: False
+
+default:
+  frequent: 100
+  kvstore: device
+dataset:
+  dataset: 'facades'
+  root: './data'
+  imageset: 'train'
+  image_root: './datasets'
+TRAIN:
+  lr: 0.0002
+  beta1: 0.5
+  end_epoch: 200
+  model_prefix: 'pix2pix'
+TEST:
+  TEST_EPOCH: 200

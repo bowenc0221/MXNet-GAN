@@ -30,7 +30,7 @@ import shutil
 import numpy as np
 import mxnet as mx
 
-from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance, get_symbol_discriminator
+from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance_autoencoder, get_symbol_generator_instance_unet, get_symbol_discriminator
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 from core.visualize import visualize
@@ -68,28 +68,28 @@ def main():
 
     label = mx.nd.zeros((batch_size,), ctx=ctx)
 
-    # # print config
-    # pprint.pprint(config)
-    # logger.info('system:{}'.format(os.uname()))
-    # logger.info('mxnet path:{}'.format(mx.__file__))
-    # logger.info('rng seed:{}'.format(config.RNG_SEED))
-    # logger.info('training config:{}\n'.format(pprint.pformat(config)))
-    #
+    # print config
+    pprint.pprint(config)
+    logger.info('system:{}'.format(os.uname()))
+    logger.info('mxnet path:{}'.format(mx.__file__))
+    logger.info('rng seed:{}'.format(config.RNG_SEED))
+    logger.info('training config:{}\n'.format(pprint.pformat(config)))
+
     # =============Generator Module=============
     if batch_size == 1:
-        generatorSymbol = get_symbol_generator_instance()
+        generatorSymbol = get_symbol_generator_instance_unet()
     else:
         generatorSymbol = get_symbol_generator()
-    # debug = True
-    # if debug:
-    #     generatorGroup = generatorSymbol.get_internals()
-    #     name_list = generatorGroup.list_outputs()
-    #     out_name = []
-    #     for name in name_list:
-    #         if 'output' in name:
-    #             out_name += [generatorGroup[name]]
-    #     out_group = mx.sym.Group(out_name)
-    #     out_shapes = out_group.infer_shape(A=(1, 3, 256, 256))
+    debug = True
+    if debug:
+        generatorGroup = generatorSymbol.get_internals()
+        name_list = generatorGroup.list_outputs()
+        out_name = []
+        for name in name_list:
+            if 'output' in name:
+                out_name += [generatorGroup[name]]
+        out_group = mx.sym.Group(out_name)
+        out_shapes = out_group.infer_shape(A=(1, 3, 256, 256))
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
     generator.bind(data_shapes=train_data.provide_data)
     generator.init_params(initializer=mx.init.Normal(sigma))
@@ -193,14 +193,15 @@ def main():
 
             t += 1
             if t % frequent == 0:
-                visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(), train_fig_prefix + '-train-%04d-%06d.png' % (epoch + 1, t))
+                # visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(), train_fig_prefix + '-train-%04d-%06d.png' % (epoch + 1, t))
                 print 'Epoch[{}] Batch[{}] Time[{:.4f}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f} gL1: {:.4f}'.format(epoch, t, t_accumulate, mACC.get()[1], mG.get()[1], mD.get()[1], mL1.get()[1])
                 # logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1]))
                 t_accumulate = 0
 
         if check_point:
             print('Saving...')
-            # visualize(outG[0].asnumpy(), batch.data[0].asnumpy(), train_fig_prefix + '-train-%04d.png' % (epoch + 1))
+            visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(),
+                      train_fig_prefix + '-train-%04d.png' % (epoch + 1))
             generator.save_params(prefix + '-generator-%04d.params' % (epoch + 1))
             discriminator.save_params(prefix + '-discriminator-%04d.params' % (epoch + 1))
 
