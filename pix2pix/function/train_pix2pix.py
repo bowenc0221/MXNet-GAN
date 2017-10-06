@@ -114,7 +114,8 @@ def main():
     aux_params = {}
     arg_names = generatorSymbol.list_arguments()
     aux_names = generatorSymbol.list_auxiliary_states()
-    arg_shapes, _, aux_shapes = generatorSymbol.infer_shape(*train_data.provide_data)
+    arg_shapes, _, aux_shapes = generatorSymbol.infer_shape(A = train_data.provide_data[0][1],
+                                                            B = train_data.provide_data[1][1])
 
     generator.init_params(initializer=mx.init.Normal(sigma))
     if lr_scheduler_g is not None:
