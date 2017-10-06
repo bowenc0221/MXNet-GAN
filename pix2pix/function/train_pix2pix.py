@@ -201,7 +201,8 @@ def main():
             discriminator.backward()
             for gradsr, gradsf in zip(discriminator._exec_group.grad_arrays, gradD):
                 for gradr, gradf in zip(gradsr, gradsf):
-                    gradr =  (gradr + gradf)/2
+                    # gradr =  (gradr + gradf)/2
+                    gradr += gradf
             discriminator.update()
 
             discriminator.update_metric(mD, [label])
