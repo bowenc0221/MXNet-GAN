@@ -30,7 +30,7 @@ import numpy as np
 import mxnet as mx
 
 from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance_autoencoder, get_symbol_generator_instance_unet, get_symbol_discriminator
-from symbols.pix2pix import defineG_encoder_decoder, defineG_unet
+from symbols.pix2pix_original import defineG_encoder_decoder, defineG_unet
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 from core.visualize import visualize
