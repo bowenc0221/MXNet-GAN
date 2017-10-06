@@ -283,7 +283,7 @@ def main():
             t += 1
             if t % frequent == 0:
                 if config.TRAIN.batch_end_plot_figure:
-                    visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(), train_fig_prefix + '-train-%04d-%06d.png' % (epoch + 1, t))
+                    visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[1].asnumpy(), train_fig_prefix + '-train-%04d-%06d.png' % (epoch + 1, t))
                 print 'Epoch[{}] Batch[{}] Time[{:.4f}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f} gL1: {:.4f}'.format(epoch, t, t_accumulate, mACC.get()[1], mG.get()[1], mD.get()[1], mL1.get()[1])
                 logger.info('Epoch[{}] Batch[{}] dACC: {:.4f} gCE: {:.4f} dCE: {:.4f}\n'.format(epoch, t, mACC.get()[1], mG.get()[1], mD.get()[1]))
                 t_accumulate = 0
@@ -291,7 +291,7 @@ def main():
         if check_point:
             print('Saving...')
             if config.TRAIN.epoch_end_plot_figure:
-                visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(),
+                visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[1].asnumpy(),
                           train_fig_prefix + '-train-%04d.png' % (epoch + 1))
             if (epoch + 1) % config.TRAIN.save_interval:
                 generator.save_params(prefix + '-generator-%04d.params' % (epoch + 1))
