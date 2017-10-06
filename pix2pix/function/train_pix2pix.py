@@ -96,7 +96,7 @@ def main():
             raise NotImplemented
     else:
         generatorSymbol = get_symbol_generator()
-    debug = True
+    # debug = True
     # if debug:
     #     generatorGroup = generatorSymbol.get_internals()
     #     name_list = generatorGroup.list_outputs()
@@ -108,6 +108,14 @@ def main():
     #     out_shapes = out_group.infer_shape(A=(1, 3, 256, 256))
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
     generator.bind(data_shapes=train_data.provide_data)
+
+    # init params
+    arg_params = {}
+    aux_params = {}
+    arg_names = generatorSymbol.list_arguments()
+    aux_names = generatorSymbol.list_auxiliary_states()
+    arg_shapes, _, aux_shapes = generatorSymbol.infer_shape(*train_data.provide_data)
+
     generator.init_params(initializer=mx.init.Normal(sigma))
     if lr_scheduler_g is not None:
         generator.init_optimizer(
