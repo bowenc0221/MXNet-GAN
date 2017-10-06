@@ -127,7 +127,8 @@ def main():
         elif 'beta' in arg_name:
             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
         else:
-            raise NameError('Unknown parameter name.')
+            # raise NameError('Unknown parameter name.')
+            pass
 
     if len(aux_names) > 0:
         pass
@@ -187,7 +188,8 @@ def main():
         elif 'beta' in arg_name:
             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
         else:
-            raise NameError('Unknown parameter name.')
+            # raise NameError('Unknown parameter name.')
+            pass
 
     if len(aux_names) > 0:
         pass
