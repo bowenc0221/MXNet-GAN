@@ -60,8 +60,8 @@ def main():
     if not os.path.exists(train_fig_path):
         os.makedirs(train_fig_path)
 
-    mx.random.seed(config.RNG_SEED)
-    np.random.seed(config.RNG_SEED)
+    # mx.random.seed(config.RNG_SEED)
+    # np.random.seed(config.RNG_SEED)
 
     # ==============data==============
     train_data = pix2pixIter(config, shuffle=True, ctx=ctx)

@@ -52,8 +52,8 @@ def main():
 
     test_fig_prefix = os.path.join(test_fig_path, dataset)
 
-    mx.random.seed(config.RNG_SEED)
-    np.random.seed(config.RNG_SEED)
+    # mx.random.seed(config.RNG_SEED)
+    # np.random.seed(config.RNG_SEED)
 
     # ==============data==============
     test_data = pix2pixIter(config, shuffle=False, ctx=ctx, is_train=False)
