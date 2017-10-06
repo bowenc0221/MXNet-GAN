@@ -71,9 +71,11 @@ def main():
     step = config.TRAIN.step_epoch * train_data.size / batch_size
     step_decay = config.TRAIN.decay_epoch * train_data.size / batch_size
     if config.TRAIN.end_epoch == (config.TRAIN.step_epoch + config.TRAIN.decay_epoch):
-        lr_scheduler = PIX2PIXScheduler(step=int(step), step_decay=int(step_decay), base_lr=lr)
+        lr_scheduler_g = PIX2PIXScheduler(step=int(step), step_decay=int(step_decay), base_lr=lr)
+        lr_scheduler_d = PIX2PIXScheduler(step=int(step), step_decay=int(step_decay), base_lr=lr/2.0)
     else:
-        lr_scheduler = None
+        lr_scheduler_g = None
+        lr_scheduler_d = None
 
     label = mx.nd.zeros((batch_size,), ctx=ctx)
 
@@ -107,12 +109,12 @@ def main():
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
     generator.bind(data_shapes=train_data.provide_data)
     generator.init_params(initializer=mx.init.Normal(sigma))
-    if lr_scheduler is not None:
+    if lr_scheduler_g is not None:
         generator.init_optimizer(
             optimizer='adam',
             optimizer_params={
                 'learning_rate': lr,
-                'lr_scheduler': lr_scheduler,
+                'lr_scheduler': lr_scheduler_g,
                 'beta1': beta1,
             })
     else:
@@ -141,19 +143,19 @@ def main():
                        label_shapes=[('label', (batch_size,))],
                        inputs_need_grad=True)
     discriminator.init_params(initializer=mx.init.Normal(sigma))
-    if lr_scheduler is not None:
+    if lr_scheduler_d is not None:
         discriminator.init_optimizer(
             optimizer='adam',
             optimizer_params={
-                'learning_rate': lr,
-                'lr_scheduler': lr_scheduler,
+                'learning_rate': lr / 2.0,
+                'lr_scheduler': lr_scheduler_d,
                 'beta1': beta1,
             })
     else:
         discriminator.init_optimizer(
             optimizer='adam',
             optimizer_params={
-                'learning_rate': lr,
+                'learning_rate': lr / 2.0,
                 'beta1': beta1,
             })
     mods.append(discriminator)
