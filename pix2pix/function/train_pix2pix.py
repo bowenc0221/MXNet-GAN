@@ -30,7 +30,7 @@ import shutil
 import numpy as np
 import mxnet as mx
 
-from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance_autoencoder, get_symbol_generator_instance_unet, get_symbol_discriminator
+from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance_autoencoder, get_symbol_generator_instance_unet, get_symbol_discriminator, get_symbol_discriminator_instance
 from symbols.pix2pix_original import defineG_encoder_decoder, defineG_unet
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
@@ -154,7 +154,7 @@ def main():
     mods = [generator]
 
     # =============Discriminator Module=============
-    discriminatorSymbol = get_symbol_discriminator()
+    discriminatorSymbol = get_symbol_discriminator_instance()
     # debug = True
     # if debug:
     #     generatorGroup = discriminatorSymbol.get_internals()
