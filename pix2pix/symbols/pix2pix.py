@@ -403,3 +403,63 @@ def get_symbol_discriminator():
     discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d8, label=label, name='dloss')
 
     return discriminatorSymbol
+
+
+def get_symbol_discriminator_instance():
+    ndf = 64
+    eps = 1e-5 + 1e-12
+
+    real_A = mx.sym.Variable(name='A')
+    B = mx.sym.Variable(name='B')
+    label = mx.sym.Variable(name='label')
+
+    AB = mx.sym.concat(real_A, B, dim=1)
+
+    # d1
+    d1_conv = mx.sym.Convolution(data=AB, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf,
+                                 name='d1_conv')
+    d1_relu = mx.sym.LeakyReLU(data=d1_conv, act_type='leaky', slope=0.2, name='d1_relu')
+
+    # d2
+    d2_conv = mx.sym.Convolution(data=d1_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 2,
+                                 no_bias=True, name='d2_conv')
+    d2_norm = mx.sym.InstanceNorm(data=d2_conv, eps=eps, name='d2_norm')
+    d2_relu = mx.sym.LeakyReLU(data=d2_norm, act_type='leaky', slope=0.2, name='d2_relu')
+
+    # d3
+    d3_conv = mx.sym.Convolution(data=d2_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 4,
+                                 no_bias=True, name='d3_conv')
+    d3_norm = mx.sym.InstanceNorm(data=d3_conv, eps=eps, name='d3_norm')
+    d3_relu = mx.sym.LeakyReLU(data=d3_norm, act_type='leaky', slope=0.2, name='d3_relu')
+
+    # d4
+    d4_conv = mx.sym.Convolution(data=d3_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 8,
+                                 no_bias=True, name='d4_conv')
+    d4_norm = mx.sym.InstanceNorm(data=d4_conv, eps=eps, name='d4_norm')
+    d4_relu = mx.sym.LeakyReLU(data=d4_norm, act_type='leaky', slope=0.2, name='d4_relu')
+
+    # d5
+    d5_conv = mx.sym.Convolution(data=d4_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 8,
+                                 no_bias=True, name='d5_conv')
+    d5_norm = mx.sym.InstanceNorm(data=d5_conv, eps=eps, name='d5_norm')
+    d5_relu = mx.sym.LeakyReLU(data=d5_norm, act_type='leaky', slope=0.2, name='d5_relu')
+
+    # d6
+    d6_conv = mx.sym.Convolution(data=d5_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 8,
+                                 no_bias=True, name='d6_conv')
+    d6_norm = mx.sym.InstanceNorm(data=d6_conv, eps=eps, name='d6_norm')
+    d6_relu = mx.sym.LeakyReLU(data=d6_norm, act_type='leaky', slope=0.2, name='d6_relu')
+
+    d7_conv = mx.sym.Convolution(data=d6_relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * 8,
+                                 no_bias=True, name='d7_conv')
+    d7_norm = mx.sym.InstanceNorm(data=d7_conv, eps=eps, name='d7_norm')
+    d7_relu = mx.sym.LeakyReLU(data=d7_norm, act_type='leaky', slope=0.2, name='d7_relu')
+
+    d8_conv = mx.sym.Convolution(data=d7_relu, kernel=(4, 4), stride=(1, 1), pad=(1, 1), num_filter=1,
+                                 name='d8_conv')
+
+    d8 = mx.sym.Flatten(d8_conv)
+
+    discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d8, label=label, name='dloss')
+
+    return discriminatorSymbol
