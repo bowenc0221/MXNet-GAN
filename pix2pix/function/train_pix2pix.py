@@ -31,6 +31,7 @@ import numpy as np
 import mxnet as mx
 
 from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance_autoencoder, get_symbol_generator_instance_unet, get_symbol_discriminator
+from symbols.pix2pix import defineG_encoder_decoder, defineG_unet
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 from core.visualize import visualize
@@ -86,9 +87,9 @@ def main():
     # =============Generator Module=============
     if batch_size == 1:
         if config.network == 'autoencoder':
-            generatorSymbol = get_symbol_generator_instance_autoencoder(config)
+            generatorSymbol = defineG_encoder_decoder(config)
         elif config.network == 'unet':
-            generatorSymbol = get_symbol_generator_instance_unet(config)
+            generatorSymbol = defineG_unet(config)
         else:
             raise NotImplemented
     else:
@@ -200,7 +201,7 @@ def main():
             discriminator.backward()
             for gradsr, gradsf in zip(discriminator._exec_group.grad_arrays, gradD):
                 for gradr, gradf in zip(gradsr, gradsf):
-                    gradr += gradf
+                    gradr =  (gradr + gradf)/2
             discriminator.update()
 
             discriminator.update_metric(mD, [label])
