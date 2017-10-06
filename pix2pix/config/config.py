@@ -62,6 +62,7 @@ config.TRAIN.BATCH_SIZE = 1
 
 config.TRAIN.epoch_end_plot_figure = True
 config.TRAIN.batch_end_plot_figure = False
+config.TRAIN.save_interval = 20
 
 # L1 loss weight
 config.TRAIN.lambda_l1 = 100

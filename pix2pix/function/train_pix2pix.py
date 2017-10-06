@@ -236,7 +236,8 @@ def main():
             if config.TRAIN.epoch_end_plot_figure:
                 visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(),
                           train_fig_prefix + '-train-%04d.png' % (epoch + 1))
-            generator.save_params(prefix + '-generator-%04d.params' % (epoch + 1))
-            discriminator.save_params(prefix + '-discriminator-%04d.params' % (epoch + 1))
+            if (epoch + 1) % config.TRAIN.save_interval:
+                generator.save_params(prefix + '-generator-%04d.params' % (epoch + 1))
+                discriminator.save_params(prefix + '-discriminator-%04d.params' % (epoch + 1))
 
 
