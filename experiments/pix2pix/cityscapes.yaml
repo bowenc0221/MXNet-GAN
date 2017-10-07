@@ -24,5 +24,8 @@ TRAIN:
   decay_epoch: 100
   lambda_l1: 100
   model_prefix: 'pix2pix'
+  epoch_end_plot_figure: True
+  batch_end_plot_figure: False
+  save_interval: 20
 TEST:
   TEST_EPOCH: 200
