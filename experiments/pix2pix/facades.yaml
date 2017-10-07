@@ -1,7 +1,7 @@
 ---
 MXNET_VERSION: "v0.11.1"
 output_path: "./output/pix2pix"
-gpus: '1'
+gpus: '0'
 loadSize: 286
 fineSize: 256
 AtoB: False
