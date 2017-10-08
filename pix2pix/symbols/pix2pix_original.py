@@ -320,22 +320,22 @@ def defineD_n_layers(n_layers):
     relu = mx.sym.LeakyReLU(data=norm, act_type='leaky', slope=0.2, name='d%d_relu' % n_layers)
 
     conv = mx.sym.Convolution(data=relu, kernel=(4, 4), stride=(1, 1), pad=(1, 1), num_filter=1,
-                              name='d%d_relu' % (n_layers + 1))
+                              name='d%d_conv' % (n_layers + 1))
 
     d = mx.sym.Flatten(conv)
     d = mx.sym.reshape(d, shape=(-1, 1))
     if n_layers == 0:
         pass
     elif n_layers == 1:
-        pass
+        label = mx.sym.broadcast_to(label, shape=(15876, 1))
     elif n_layers == 2:
-        pass
+        label = mx.sym.broadcast_to(label, shape=(3844, 1))
     elif n_layers == 3:
         label = mx.sym.broadcast_to(label, shape=(900, 1))
     elif n_layers == 4:
-        pass
+        label = mx.sym.broadcast_to(label, shape=(196, 1))
     elif n_layers == 5:
-        pass
+        label = mx.sym.broadcast_to(label, shape=(36, 1))
     elif n_layers == 6:
         pass
 
