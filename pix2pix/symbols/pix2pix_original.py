@@ -337,7 +337,7 @@ def defineD_n_layers(n_layers):
     elif n_layers == 5:
         label = mx.sym.broadcast_to(label, shape=(36, 1))
     elif n_layers == 6:
-        pass
+        label = mx.sym.broadcast_to(label, shape=(4, 1))
 
     discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d, label=label, name='dloss')
 

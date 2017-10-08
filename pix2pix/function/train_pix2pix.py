@@ -154,23 +154,23 @@ def main():
     mods = [generator]
 
     # =============Discriminator Module=============
-    # discriminatorSymbol = get_symbol_discriminator_instance()
-    if config.netD == 'basic':
-        discriminatorSymbol = defineD_basic()
-    elif config.netD == 'n_layers':
-        discriminatorSymbol = defineD_n_layers(n_layers = config.n_layers)
-    else:
-        raise NotImplemented
-    debug = True
-    if debug:
-        generatorGroup = discriminatorSymbol.get_internals()
-        name_list = generatorGroup.list_outputs()
-        out_name = []
-        for name in name_list:
-            if 'output' in name:
-                out_name += [generatorGroup[name]]
-        out_group = mx.sym.Group(out_name)
-        out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256))
+    discriminatorSymbol = get_symbol_discriminator_instance()
+    # if config.netD == 'basic':
+    #     discriminatorSymbol = defineD_basic()
+    # elif config.netD == 'n_layers':
+    #     discriminatorSymbol = defineD_n_layers(n_layers = config.n_layers)
+    # else:
+    #     raise NotImplemented
+    # debug = True
+    # if debug:
+    #     generatorGroup = discriminatorSymbol.get_internals()
+    #     name_list = generatorGroup.list_outputs()
+    #     out_name = []
+    #     for name in name_list:
+    #         if 'output' in name:
+    #             out_name += [generatorGroup[name]]
+    #     out_group = mx.sym.Group(out_name)
+    #     out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256))
     discriminator = mx.mod.Module(symbol=discriminatorSymbol, data_names=('A', 'B',), label_names=('label',), context=ctx)
     discriminator.bind(data_shapes=train_data.provide_data,
                        label_shapes=[('label', (batch_size,))],
