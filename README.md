@@ -1,7 +1,7 @@
 # MXNet-GAN
 MXNet Implementation of various GAN, including: DCGAN [1], CGAN [2], Image-to-Image translation [3] (a.k.a. pix2pix)  
 
-This repo initially serves as the final project for [UIUC ECE544NA](https://courses.engr.illinois.edu/ece544na/fa2017/_site/).  
+This is a working repo initially served as the final project for [UIUC ECE544NA](https://courses.engr.illinois.edu/ece544na/fa2017/_site/).  
 
 ## Prerequisites
 - Linux (Tested in Ubuntu 16.04)
@@ -25,7 +25,7 @@ This repo initially serves as the final project for [UIUC ECE544NA](https://cour
   git clone https://github.com/bowenc0221/MXNet-GAN
   cd MXNet-GAN
   ```
-- Make a directory named ```external/mxnet/$MXNET_VERSION``` and put ```$MXNET/python/mxnet``` in this directory.
+- Put MXNet python package into ```./external/mxnet/$(MXNET_VERSION)``` and modify ```MXNET_VERSION``` in ```./experiments/*.yaml``` to ```$(YOUR_MXNET_PACKAGE)```.
 - Install python packages.
   ```bash
   pip install Cython
@@ -63,3 +63,4 @@ Code is inspired by:
 [2] [MXNet DCGAN Example](https://github.com/apache/incubator-mxnet/blob/master/example/gan/dcgan.py)  
 [3] [A MXNet W-GAN Code](https://github.com/vsooda/mxnet-wgan)  
 [4] [pytorch-CycleGAN-and-pix2pix](https://github.com/bowenc0221/pytorch-CycleGAN-and-pix2pix)  
+[5] [MSRA Deformable-ConvNets](https://github.com/msracver/Deformable-ConvNets)  
