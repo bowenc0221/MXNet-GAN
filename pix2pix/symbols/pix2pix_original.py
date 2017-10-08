@@ -298,6 +298,8 @@ def defineD_n_layers(n_layers):
     B = mx.sym.Variable(name='B')
     label = mx.sym.Variable(name='label')
 
+    label = mx.sym.reshape(label, shape=(1,1))
+
     AB = mx.sym.concat(real_A, B, dim=1)
 
     # d0
