@@ -10,22 +10,28 @@ This repo initially serves as the final project for [UIUC ECE544NA](https://cour
 
 ## Getting Started
 ### Installation
-- Build MXNet from source.
-```bash
-git clone --recursive https://github.com/apache/incubator-mxnet mxnet
-cd mxnet
-cp make/config.mk .
-vim config.mk  # You need to change configuration in order to enable cuda and cudnn 
-make -j8
-cd python
-sudo python setup.py install
-```
+- Build MXNet from source (tested using MXNet version v.0.11.1).
+  ```bash
+  git clone --recursive https://github.com/apache/incubator-mxnet mxnet
+  cd mxnet
+  cp make/config.mk .
+  vim config.mk  # You need to change configuration in order to enable cuda and cudnn 
+  make -j8
+  cd python
+  sudo python setup.py install
+  ```
 - Clone this repo:
-```bash
-git clone https://github.com/bowenc0221/MXNet-GAN
-cd MXNet-GAN
-```
+  ```bash
+  git clone https://github.com/bowenc0221/MXNet-GAN
+  cd MXNet-GAN
+  ```
 - Make a directory named ```external/mxnet/$MXNET_VERSION``` and put ```$MXNET/python/mxnet``` in this directory.
+- Install python packages.
+  ```bash
+  pip install Cython
+  pip install EasyDict
+  pip install opencv-python
+  ```
 
 ### DCGAN train/test
 
@@ -33,18 +39,18 @@ cd MXNet-GAN
 
 ### pix2pix train/test
 - Download a pix2pix dataset (e.g.facades):
-```bash
-bash ./datasets/download_pix2pix_dataset.sh facades
-```
-Please refer to [pytorch-CycleGAN-and-pix2pix](https://github.com/bowenc0221/pytorch-CycleGAN-and-pix2pix)
+  ```bash
+  bash ./datasets/download_pix2pix_dataset.sh facades
+  ```
+  Please refer to [pytorch-CycleGAN-and-pix2pix](https://github.com/bowenc0221/pytorch-CycleGAN-and-pix2pix) for dataset information.
 - Train a model:
-```bash
-python pix2pix/train.py --cfg experiments/mxnet_pix2pix.yaml
-```
+  ```bash
+  python pix2pix/train.py --cfg experiments/mxnet_pix2pix.yaml
+  ```
 - Test a model:
-```bash
-python pix2pix/test.py --cfg experiments/mxnet_pix2pix.yaml
-```
+  ```bash
+  python pix2pix/test.py --cfg experiments/mxnet_pix2pix.yaml
+  ```
 
 ## Reference
 [1] [DCGAN](https://arxiv.org/abs/1511.06434): Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks  
