@@ -304,4 +304,5 @@ def main():
                 generator.save_params(prefix + '-generator-%04d.params' % (epoch + 1))
                 discriminator.save_params(prefix + '-discriminator-%04d.params' % (epoch + 1))
 
-
+    generator.save_params(prefix + '-generator-%04d.params' % config.TRAIN.end_epoch)
+    discriminator.save_params(prefix + '-discriminator-%04d.params' % config.TRAIN.end_epoch)
