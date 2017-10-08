@@ -31,7 +31,7 @@ import numpy as np
 import mxnet as mx
 
 from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance_autoencoder, get_symbol_generator_instance_unet, get_symbol_discriminator, get_symbol_discriminator_instance
-from symbols.pix2pix_original import defineG_encoder_decoder, defineG_unet
+from symbols.pix2pix_original import defineG_encoder_decoder, defineG_unet, defineD_n_layers
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 from core.visualize import visualize
@@ -154,17 +154,18 @@ def main():
     mods = [generator]
 
     # =============Discriminator Module=============
-    discriminatorSymbol = get_symbol_discriminator_instance()
-    # debug = True
-    # if debug:
-    #     generatorGroup = discriminatorSymbol.get_internals()
-    #     name_list = generatorGroup.list_outputs()
-    #     out_name = []
-    #     for name in name_list:
-    #         if 'output' in name:
-    #             out_name += [generatorGroup[name]]
-    #     out_group = mx.sym.Group(out_name)
-    #     out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256))
+    # discriminatorSymbol = get_symbol_discriminator_instance()
+    discriminatorSymbol = defineD_n_layers(n_layers = 6)
+    debug = True
+    if debug:
+        generatorGroup = discriminatorSymbol.get_internals()
+        name_list = generatorGroup.list_outputs()
+        out_name = []
+        for name in name_list:
+            if 'output' in name:
+                out_name += [generatorGroup[name]]
+        out_group = mx.sym.Group(out_name)
+        out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256))
     discriminator = mx.mod.Module(symbol=discriminatorSymbol, data_names=('A', 'B',), label_names=('label',), context=ctx)
     discriminator.bind(data_shapes=train_data.provide_data,
                        label_shapes=[('label', (batch_size,))],

@@ -272,6 +272,52 @@ def defineD_pixelGAN():
     return discriminatorSymbol
 
 def defineD_n_layers(n_layers):
+    # if n = 0, then
+    # use
+    # pixelGAN(rf=1)
+    # else rf is 16 if n = 1
+    #            34 if n = 2
+    #            70 if n = 3
+    #            142 if n = 4
+    #            286 if n = 5
+    #            574 if n = 6
     if n_layers == 0:
         return defineD_pixelGAN()
+
+    ndf = 64
+    eps = 1e-5 + 1e-12
+
+    real_A = mx.sym.Variable(name='A')
+    B = mx.sym.Variable(name='B')
+    label = mx.sym.Variable(name='label')
+
+    AB = mx.sym.concat(real_A, B, dim=1)
+
+    # d0
+    conv = mx.sym.Convolution(data=AB, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf,
+                                 name='d0_conv')
+    relu = mx.sym.LeakyReLU(data=conv, act_type='leaky', slope=0.2, name='d0_relu')
+
+    for n in range(1, n_layers):
+        nf_mult = min(2 ** n, 8)
+        conv =  mx.sym.Convolution(data=relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * nf_mult,
+                                   name='d%d_conv' % n)
+        norm = mx.sym.InstanceNorm(data=conv, eps=eps, name='d%d_norm' % n)
+        relu = mx.sym.LeakyReLU(data=norm, act_type='leaky', slope=0.2, name='d%d_relu' % n)
+
+    nf_mult = min(2 ** n_layers, 8)
+
+    conv = mx.sym.Convolution(data=relu, kernel=(4, 4), stride=(1, 1), pad=(1, 1), num_filter=ndf * nf_mult,
+                              name='d%d_conv' % n_layers)
+    norm = mx.sym.InstanceNorm(data=conv, eps=eps, name='d%d_norm' % n_layers)
+    relu = mx.sym.LeakyReLU(data=norm, act_type='leaky', slope=0.2, name='d%d_relu' % n_layers)
+
+    conv = mx.sym.Convolution(data=relu, kernel=(4, 4), stride=(1, 1), pad=(1, 1), num_filter=1,
+                              name='d%d_relu' % (n_layers + 1))
+
+    d = mx.sym.Flatten(conv)
+
+    discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d, label=label, name='dloss')
+
+    return discriminatorSymbol
 

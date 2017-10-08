@@ -55,10 +55,10 @@ def get_symbol_generator():
     # --- inner most ---
     down_relu8 = mx.sym.LeakyReLU(data=down_norm7, act_type='leaky', slope=0.2, name='down_relu8')
     down_conv8 = mx.sym.Convolution(data=down_relu8, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
-                                   no_bias=True, name='down_conv8')
+                                    no_bias=True, name='down_conv8')
     up_relu8 = mx.sym.Activation(data=down_conv8, act_type='relu', name='up_relu8')
     up_conv8 = mx.sym.Deconvolution(data=up_relu8, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
-                                   no_bias=True, name='up_conv8')
+                                    no_bias=True, name='up_conv8')
     up_norm8 = mx.sym.BatchNorm(data=up_conv8, eps=eps, name='up_norm8')
 
     # --- decoder 7 ----
@@ -107,7 +107,7 @@ def get_symbol_generator():
     up_tanh = mx.sym.Activation(up_conv1, name='up_tanh', act_type='tanh')
 
     l1_loss_ = mx.sym.mean(mx.sym.abs(up_tanh - real_B))
-    l1_loss = mx.sym.MakeLoss(l1_loss_)
+    l1_loss = mx.sym.MakeLoss(l1_loss_, grad_scale=cfg.TRAIN.lambda_l1)
 
     group = mx.sym.Group([l1_loss, up_tanh])
 
