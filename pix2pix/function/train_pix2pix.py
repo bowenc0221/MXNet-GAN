@@ -154,13 +154,13 @@ def main():
     mods = [generator]
 
     # =============Discriminator Module=============
-    discriminatorSymbol = get_symbol_discriminator_instance()
-    # if config.netD == 'basic':
-    #     discriminatorSymbol = defineD_basic()
-    # elif config.netD == 'n_layers':
-    #     discriminatorSymbol = defineD_n_layers(n_layers = config.n_layers)
-    # else:
-    #     raise NotImplemented
+    # discriminatorSymbol = get_symbol_discriminator_instance()
+    if config.netD == 'basic':
+        discriminatorSymbol = defineD_basic()
+    elif config.netD == 'n_layers':
+        discriminatorSymbol = defineD_n_layers(n_layers = config.n_layers)
+    else:
+        raise NotImplemented
     # debug = True
     # if debug:
     #     generatorGroup = discriminatorSymbol.get_internals()

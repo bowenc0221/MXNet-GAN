@@ -7,7 +7,7 @@ fineSize: 256
 AtoB: False
 netG: 'unet'
 netD: 'n_layers'
-n_layers: 0
+n_layers: 3
 
 default:
   frequent: 10
@@ -29,4 +29,4 @@ TRAIN:
   epoch_end_plot_figure: True
   batch_end_plot_figure: True
 TEST:
-  TEST_EPOCH: 1
+  TEST_EPOCH: 2
