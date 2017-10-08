@@ -240,6 +240,10 @@ def defineG_unet(cfg):
 
     return group
 
+def defineD_basic():
+    n_layers = 3
+    return defineD_n_layers(n_layers)
+
 def defineD_pixelGAN():
     ndf = 64
     eps = 1e-5 + 1e-12

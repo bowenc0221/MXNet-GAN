@@ -5,7 +5,8 @@ gpus: '1'
 loadSize: 286
 fineSize: 256
 AtoB: False
-network: 'unet'
+netG: 'unet'
+netD: 'basic'
 
 default:
   frequent: 10

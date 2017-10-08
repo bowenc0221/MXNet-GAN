@@ -31,7 +31,7 @@ import numpy as np
 import mxnet as mx
 
 from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance_autoencoder, get_symbol_generator_instance_unet, get_symbol_discriminator, get_symbol_discriminator_instance
-from symbols.pix2pix_original import defineG_encoder_decoder, defineG_unet, defineD_n_layers
+from symbols.pix2pix_original import defineG_encoder_decoder, defineG_unet, defineD_n_layers, defineD_basic
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 from core.visualize import visualize
@@ -155,7 +155,12 @@ def main():
 
     # =============Discriminator Module=============
     # discriminatorSymbol = get_symbol_discriminator_instance()
-    discriminatorSymbol = defineD_n_layers(n_layers = 6)
+    if config.netD == 'basic':
+        discriminatorSymbol = defineD_basic()
+    elif config.netD == 'n_layers':
+        discriminatorSymbol = defineD_n_layers(n_layers = config.n_layers)
+    else:
+        raise NotImplemented
     debug = True
     if debug:
         generatorGroup = discriminatorSymbol.get_internals()

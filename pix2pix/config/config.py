@@ -20,7 +20,9 @@ config.RNG_SEED = 1
 config.loadSize = 286
 config.fineSize = 256
 config.AtoB = False
-config.network = 'autoencoder'
+config.netG = 'autoencoder'  # 'autoencoder' or 'unet'
+config.netD = 'basic'  # 'basic' or 'n_layers'
+config.n_layers = 0  # only used if netD=='n_layers'
 
 # default training
 config.default = edict()
