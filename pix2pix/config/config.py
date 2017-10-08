@@ -68,6 +68,7 @@ config.TRAIN.lambda_l1 = 100
 config.TEST = edict()
 
 config.TEST.TEST_EPOCH = 0
+config.TEST.SCALES = [(256, 256)]
 
 
 def update_config(config_file):

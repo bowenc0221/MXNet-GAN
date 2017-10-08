@@ -7,6 +7,7 @@ import os
 import sys
 import matplotlib
 matplotlib.use('Agg')
+from skimage import io
 from config.config import config, update_config
 
 def parse_args():
@@ -82,7 +83,17 @@ def main():
     generator.load_params(prefix + '-generator-%04d.params' % epoch)
 
     test_data.reset()
-    batch = test_data.next()
-    generator.forward(batch, is_train=False)
-    outG = generator.get_outputs()
-    visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[0].asnumpy(), test_fig_prefix + '-test-%04d.png' % epoch)
+    # batch = test_data.next()
+    # generator.forward(batch, is_train=False)
+    # outG = generator.get_outputs()
+    # visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[1].asnumpy(), test_fig_prefix + '-test-%04d.png' % epoch)
+
+    count = 0
+    for batch in test_data:
+        generator.forward(batch, is_train=False)
+        outG = generator.get_outputs()[1].asnumpy()
+        fake_B = outG.transpose((0, 2, 3, 1))
+        fake_B = np.clip((fake_B + 1.0) * (255.0 / 2.0), 0, 255).astype(np.uint8)
+        fname = test_fig_prefix + '-test-%04d-%06d.png' % (epoch, count)
+        count += 1
+        io.imsave(fname, fake_B)
