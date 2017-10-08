@@ -182,7 +182,8 @@ def main():
     arg_names = discriminatorSymbol.list_arguments()
     aux_names = discriminatorSymbol.list_auxiliary_states()
     arg_shapes, _, aux_shapes = discriminatorSymbol.infer_shape(A=train_data.provide_data[0][1],
-                                                                B=train_data.provide_data[1][1])
+                                                                B=train_data.provide_data[1][1],
+                                                                label=(batch_size,))
 
     for idx, arg_name in enumerate(arg_names):
         if 'weight' in arg_name:
