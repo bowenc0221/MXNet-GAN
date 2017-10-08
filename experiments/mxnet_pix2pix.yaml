@@ -6,7 +6,8 @@ loadSize: 286
 fineSize: 256
 AtoB: False
 netG: 'unet'
-netD: 'basic'
+netD: 'n_layers'
+n_layers: 0
 
 default:
   frequent: 10
