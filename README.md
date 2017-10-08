@@ -34,8 +34,30 @@ This is a working repo initially served as the final project for [UIUC ECE544NA]
   ```
 
 ### DCGAN train/test
+- Train
+  ```bash
+  python dcgan/train.py --cfg experiments/dcgan/mnist_dcgan.yaml
+  ```
+- Test
+  ```bash
+  python dcgan/test.py --cfg experiments/dcgan/mnist_dcgan.yaml
+  ```
+- Warning
+  - I only implemented dcgan for mnist. You may need to write your own data iterator for other dataset.
+  - I did not tune parameter for dcgan. I only trained for 1 epoch!
 
 ### CGAN train/test
+- train
+  ```bash
+  python cgan/train.py --cfg experiments/cgan/mnist_cgan.yaml
+  ```
+- test
+  ```bash
+  python cgan/test.py --cfg experiments/cgan/mnist_cgan.yaml
+  ```
+- Warning
+  - I only implemented dcgan for mnist. You may need to write your own data iterator for other dataset.
+  - I did not tune parameter for dcgan. I only trained for 1 epoch!
 
 ### pix2pix train/test
 - Download a pix2pix dataset (e.g.facades):
@@ -44,13 +66,31 @@ This is a working repo initially served as the final project for [UIUC ECE544NA]
   ```
   Please refer to [pytorch-CycleGAN-and-pix2pix](https://github.com/bowenc0221/pytorch-CycleGAN-and-pix2pix) for dataset information.
 - Train a model:
-  ```bash
-  python pix2pix/train.py --cfg experiments/mxnet_pix2pix.yaml
-  ```
+  - AtoB
+    ```bash
+    python pix2pix/train.py --cfg experiments/pix2pix/facades_pix2pix_AtoB.yaml
+    ```
+  - BtoA
+    ```bash
+    python pix2pix/train.py --cfg experiments/pix2pix/facades_pix2pix_BtoA.yaml
+    ```
 - Test a model:
-  ```bash
-  python pix2pix/test.py --cfg experiments/mxnet_pix2pix.yaml
-  ```
+  - AtoB
+    ```bash
+    python pix2pix/test.py --cfg experiments/pix2pix/facades_pix2pix_AtoB.yaml
+    ```
+  - BtoA
+    ```bash
+    python pix2pix/test.py --cfg experiments/pix2pix/facades_pix2pix_BtoA.yaml
+    ```
+- Train pix2pix on your own dataset
+  - I only implemented pix2pix for cityscapes and facades dataset but you can generalize easily to your own dataset.
+  - Prepare pix2pix-datasets according to [this link](https://github.com/bowenc0221/pytorch-CycleGAN-and-pix2pix/blob/master/README.md#pix2pix-datasets)
+  - Modify ```num_train``` and ```num_val``` in ```./data/generate_train_val.py``` and run the script.
+  - In configuration file, modify ```dataset``` part.
+- Warning
+  - Currently, I only implemented ```batch_size = 1``` and 256x256 discriminator.
+  - I will implement arbitrary batch_size and PatchGAN in the future.
 
 ## Reference
 [1] [DCGAN](https://arxiv.org/abs/1511.06434): Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks  
