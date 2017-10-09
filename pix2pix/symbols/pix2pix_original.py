@@ -268,7 +268,7 @@ def defineD_pixelGAN():
     d2_relu = mx.sym.LeakyReLU(data=d2_norm, act_type='leaky', slope=0.2, name='d2_relu')
 
     # d3
-    d3_conv = mx.sym.Convolution(data=d2_relu, kernel=(1, 1), stride=(1, 1), pad=(0, 0), num_filter=ndf * 2,
+    d3_conv = mx.sym.Convolution(data=d2_relu, kernel=(1, 1), stride=(1, 1), pad=(0, 0), num_filter=1,
                                  name='d3_conv')
 
     d3 = mx.sym.Flatten(d3_conv)
