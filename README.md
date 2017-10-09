@@ -83,14 +83,19 @@ This is a working repo initially served as the final project for [UIUC ECE544NA]
     ```bash
     python pix2pix/test.py --cfg experiments/pix2pix/facades_pix2pix_BtoA.yaml
     ```
+- PatchGAN
+  - You can use any PatchGAN listed in the paper by changing ```netD``` in configuration to ```'n_layers'``` and set ```n_layers``` to any number from 0-6.
+  - ```n_layers = 0```: pixelGAN 1x1 discriminator
+  - ```n_layers = 1```: patchGAN 16x16 discriminator
+  - ```n_layers = 3```: patchGAN 70x70 discriminator (default setting in the paper)
+  - ```n_layers = 6```: imageGAN 256x256 discriminator
 - Train pix2pix on your own dataset
   - I only implemented pix2pix for cityscapes and facades dataset but you can generalize easily to your own dataset.
   - Prepare pix2pix-datasets according to [this link](https://github.com/bowenc0221/pytorch-CycleGAN-and-pix2pix/blob/master/README.md#pix2pix-datasets)
   - Modify ```num_train``` and ```num_val``` in ```./data/generate_train_val.py``` and run the script.
   - In configuration file, modify ```dataset``` part.
 - Warning
-  - Currently, I only implemented ```batch_size = 1``` and 256x256 discriminator.
-  - I will implement arbitrary batch_size and PatchGAN in the future.
+  - Currently, I only implemented ```batch_size = 1```.
 
 ## Reference
 [1] [DCGAN](https://arxiv.org/abs/1511.06434): Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks  
