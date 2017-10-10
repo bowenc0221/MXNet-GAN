@@ -139,7 +139,7 @@ def main():
             if 'weight' in arg_name:
                 arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
             elif 'gamma' in arg_name:
-                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
             elif 'bias' in arg_name:
                 arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
             elif 'beta' in arg_name:
@@ -229,7 +229,7 @@ def main():
             if 'weight' in arg_name:
                 arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
             elif 'gamma' in arg_name:
-                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
             elif 'bias' in arg_name:
                 arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
             elif 'beta' in arg_name:
