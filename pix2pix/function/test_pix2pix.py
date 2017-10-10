@@ -104,5 +104,5 @@ def main():
         fake_B = np.clip((fake_B + 1.0) * (255.0 / 2.0), 0, 255).astype(np.uint8)
         for n in range(batch_size):
             fname = test_fig_prefix + '-test-%04d-%06d.png' % (epoch, count + n)
-            io.imsave(fname, fake_B[0])
+            io.imsave(fname, fake_B[n])
         count += batch_size
