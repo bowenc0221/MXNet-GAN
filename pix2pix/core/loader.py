@@ -52,7 +52,7 @@ class pix2pixIter(mx.io.DataIter):
             np.random.shuffle(self.index)
 
     def iter_next(self):
-        return self.cur < self.size
+        return self.cur + self.batch_size < self.size
 
     def next(self):
         if self.iter_next():
