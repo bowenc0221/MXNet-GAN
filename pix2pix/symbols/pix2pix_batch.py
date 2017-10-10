@@ -8,7 +8,7 @@ def defineG_encoder_decoder_batch(cfg):
     ngf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_stats = True
+    use_global_stats = False
 
     real_A = mx.sym.Variable(name='A')
     real_B = mx.sym.Variable(name='B')
@@ -121,7 +121,7 @@ def defineG_unet_batch(cfg):
     ngf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_stats = True
+    use_global_stats = False
 
     real_A = mx.sym.Variable(name='A')
     real_B = mx.sym.Variable(name='B')
