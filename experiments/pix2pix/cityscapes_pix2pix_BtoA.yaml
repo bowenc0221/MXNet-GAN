@@ -29,5 +29,8 @@ TRAIN:
   epoch_end_plot_figure: True
   batch_end_plot_figure: False
   save_interval: 20
+  BATCH_SIZE: 1
 TEST:
   TEST_EPOCH: 200
+  img_h: 256
+  img_w: 256

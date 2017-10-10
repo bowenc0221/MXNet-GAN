@@ -13,7 +13,7 @@ default:
   frequent: 100
   kvstore: device
 dataset:
-  dataset: 'facades'
+  dataset: 'edges2shoes'
   root: './data'
   imageset: 'train'
   image_root: './datasets'
@@ -21,16 +21,16 @@ dataset:
 TRAIN:
   lr: 0.0002
   beta1: 0.5
-  end_epoch: 200
+  end_epoch: 15
   step_epoch: 100
   decay_epoch: 100
   lambda_l1: 100
   model_prefix: 'pix2pix'
   epoch_end_plot_figure: True
   batch_end_plot_figure: False
-  save_interval: 20
-  BATCH_SIZE: 1
+  save_interval: 1
+  BATCH_SIZE: 4
 TEST:
-  TEST_EPOCH: 200
+  TEST_EPOCH: 15
   img_h: 256
   img_w: 256
