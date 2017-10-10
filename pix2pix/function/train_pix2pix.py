@@ -160,7 +160,7 @@ def main():
                 'learning_rate': lr,
                 'lr_scheduler': lr_scheduler_g,
                 'beta1': beta1,
-                'rescale_grad': 1.0/float(batch_size)
+                'rescale_grad': 1.0/batch_size
             })
     else:
         generator.init_optimizer(
@@ -168,7 +168,7 @@ def main():
             optimizer_params={
                 'learning_rate': lr,
                 'beta1': beta1,
-                'rescale_grad': 1.0 / float(batch_size)
+                'rescale_grad': 1.0/batch_size
             })
     mods = [generator]
 
