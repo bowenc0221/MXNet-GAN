@@ -28,5 +28,6 @@ TRAIN:
   model_prefix: 'pix2pix'
   epoch_end_plot_figure: True
   batch_end_plot_figure: True
+  BATCH_SIZE: 4
 TEST:
   TEST_EPOCH: 2
