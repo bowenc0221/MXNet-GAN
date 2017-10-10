@@ -52,7 +52,7 @@ class pix2pixIter(mx.io.DataIter):
             np.random.shuffle(self.index)
 
     def iter_next(self):
-        return self.cur + self.batch_size < self.size
+        return self.cur < self.size
 
     def next(self):
         if self.iter_next():
@@ -70,8 +70,8 @@ class pix2pixIter(mx.io.DataIter):
         return self.cur / self.batch_size
 
     def getpad(self):
-        if self.cur + self.batch_size > self.size:
-            return self.cur + self.batch_size - self.size
+        if self.cur > self.size:
+            return self.cur - self.size
         else:
             return 0
 
@@ -89,6 +89,7 @@ class pix2pixIter(mx.io.DataIter):
     def get_batch(self):
         cur_from = self.cur
         cur_to = min(cur_from + self.batch_size, self.size)
+        pad = cur_from + self.batch_size - cur_to
 
         if self.is_train:
             batchA = np.zeros((0, 3, self.config.fineSize, self.config.fineSize))
@@ -147,3 +148,11 @@ class pix2pixIter(mx.io.DataIter):
         else:
             self.B = batchA.astype(np.float32) / (255.0 / 2.0) - 1.0
             self.A = batchB.astype(np.float32) / (255.0 / 2.0) - 1.0
+
+        if pad > 0:
+            if self.is_train:
+                self.A = np.concatenate((self.A, np.zeros((pad, 3, self.config.fineSize, self.config.fineSize))), axis=1)
+                self.B = np.concatenate((self.B, np.zeros((pad, 3, self.config.fineSize, self.config.fineSize))), axis=1)
+            else:
+                self.A = np.concatenate((self.A, np.zeros((pad, 3, self.config.TEST.img_h, self.config.TEST.img_w))), axis=1)
+                self.B = np.concatenate((self.B, np.zeros((pad, 3, self.config.TEST.img_h, self.config.TEST.img_w))), axis=1)
