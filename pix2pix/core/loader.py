@@ -151,8 +151,8 @@ class pix2pixIter(mx.io.DataIter):
 
         if pad > 0:
             if self.is_train:
-                self.A = np.concatenate((self.A, np.zeros((pad, 3, self.config.fineSize, self.config.fineSize))), axis=1)
-                self.B = np.concatenate((self.B, np.zeros((pad, 3, self.config.fineSize, self.config.fineSize))), axis=1)
+                self.A = np.concatenate((self.A, np.zeros((pad, 3, self.config.fineSize, self.config.fineSize))), axis=0)
+                self.B = np.concatenate((self.B, np.zeros((pad, 3, self.config.fineSize, self.config.fineSize))), axis=0)
             else:
-                self.A = np.concatenate((self.A, np.zeros((pad, 3, self.config.TEST.img_h, self.config.TEST.img_w))), axis=1)
-                self.B = np.concatenate((self.B, np.zeros((pad, 3, self.config.TEST.img_h, self.config.TEST.img_w))), axis=1)
+                self.A = np.concatenate((self.A, np.zeros((pad, 3, self.config.TEST.img_h, self.config.TEST.img_w))), axis=0)
+                self.B = np.concatenate((self.B, np.zeros((pad, 3, self.config.TEST.img_h, self.config.TEST.img_w))), axis=0)
