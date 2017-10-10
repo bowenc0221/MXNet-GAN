@@ -4,11 +4,14 @@
 
 import mxnet as mx
 
-def defineG_encoder_decoder_batch(cfg):
+def defineG_encoder_decoder_batch(cfg, is_train=True):
     ngf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_stats = False
+    if is_train:
+        use_global_stats = False
+    else:
+        use_global_stats = True
 
     real_A = mx.sym.Variable(name='A')
     real_B = mx.sym.Variable(name='B')
@@ -117,11 +120,14 @@ def defineG_encoder_decoder_batch(cfg):
 
     return group
 
-def defineG_unet_batch(cfg):
+def defineG_unet_batch(cfg, is_train=True):
     ngf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_stats = False
+    if is_train:
+        use_global_stats = False
+    else:
+        use_global_stats = True
 
     real_A = mx.sym.Variable(name='A')
     real_B = mx.sym.Variable(name='B')
@@ -248,11 +254,14 @@ def defineD_basic_batch(batch_size):
     n_layers = 3
     return defineD_n_layers_batch(n_layers, batch_size)
 
-def defineD_pixelGAN_batch(batch_size):
+def defineD_pixelGAN_batch(batch_size, is_train=True):
     ndf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_stats = True
+    if is_train:
+        use_global_stats = False
+    else:
+        use_global_stats = True
 
     real_A = mx.sym.Variable(name='A')
     B = mx.sym.Variable(name='B')
@@ -285,7 +294,7 @@ def defineD_pixelGAN_batch(batch_size):
 
     return discriminatorSymbol
 
-def defineD_n_layers_batch(n_layers, batch_size):
+def defineD_n_layers_batch(n_layers, batch_size, is_train=True):
     """
         if n = 0, then
         use
@@ -304,7 +313,10 @@ def defineD_n_layers_batch(n_layers, batch_size):
     ndf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_stats = True
+    if is_train:
+        use_global_stats = False
+    else:
+        use_global_stats = True
 
     real_A = mx.sym.Variable(name='A')
     B = mx.sym.Variable(name='B')
