@@ -113,45 +113,50 @@ def main():
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
     generator.bind(data_shapes=train_data.provide_data)
 
-    # # init params
-    # arg_params = {}
-    # aux_params = {}
-    # arg_names = generatorSymbol.list_arguments()
-    # aux_names = generatorSymbol.list_auxiliary_states()
-    # arg_shapes, _, aux_shapes = generatorSymbol.infer_shape(A = train_data.provide_data[0][1],
-    #                                                         B = train_data.provide_data[1][1])
-    #
-    # if batch_size == 1:
-    #     for idx, arg_name in enumerate(arg_names):
-    #         if 'weight' in arg_name:
-    #             arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
-    #         elif 'gamma' in arg_name:
-    #             arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
-    #         elif 'bias' in arg_name:
-    #             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-    #         elif 'beta' in arg_name:
-    #             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-    #         else:
-    #             # raise NameError('Unknown parameter name.')
-    #             pass
-    # else:
-    #     for idx, arg_name in enumerate(arg_names):
-    #         if 'weight' in arg_name:
-    #             arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
-    #         elif 'gamma' in arg_name:
-    #             arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
-    #         elif 'bias' in arg_name:
-    #             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-    #         elif 'beta' in arg_name:
-    #             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-    #         else:
-    #             # raise NameError('Unknown parameter name.')
-    #             pass
-    #     for idx, aux_name in enumerate(aux_names):
-    #         aux_params[aux_name] = mx.nd.zeros(shape=aux_shapes[idx])
+    # init params
+    arg_params = {}
+    aux_params = {}
+    arg_names = generatorSymbol.list_arguments()
+    aux_names = generatorSymbol.list_auxiliary_states()
+    arg_shapes, _, aux_shapes = generatorSymbol.infer_shape(A = train_data.provide_data[0][1],
+                                                            B = train_data.provide_data[1][1])
 
-    generator.init_params(initializer=mx.init.Normal(sigma))
-    # generator.init_params(arg_params=arg_params, aux_params=aux_params)
+    if batch_size == 1:
+        for idx, arg_name in enumerate(arg_names):
+            if 'weight' in arg_name:
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
+            elif 'gamma' in arg_name:
+                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+            elif 'bias' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            elif 'beta' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            else:
+                # raise NameError('Unknown parameter name.')
+                pass
+    else:
+        for idx, arg_name in enumerate(arg_names):
+            if 'weight' in arg_name:
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
+            elif 'gamma' in arg_name:
+                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+            elif 'bias' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            elif 'beta' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            else:
+                # raise NameError('Unknown parameter name.')
+                pass
+        for idx, aux_name in enumerate(aux_names):
+            if 'mean' in aux_name:
+                aux_params[aux_name] = mx.nd.zeros(shape=aux_shapes[idx])
+            elif 'var' in aux_name:
+                aux_params[aux_name] = mx.nd.ones(shape=aux_shapes[idx])
+            else:
+                raise NameError('Unknown aux_name.')
+
+    # generator.init_params(initializer=mx.init.Normal(sigma))
+    generator.init_params(arg_params=arg_params, aux_params=aux_params)
 
     if lr_scheduler_g is not None:
         generator.init_optimizer(
@@ -203,45 +208,50 @@ def main():
                        inputs_need_grad=True)
 
     # init params
-    # arg_params = {}
-    # aux_params = {}
-    # arg_names = discriminatorSymbol.list_arguments()
-    # aux_names = discriminatorSymbol.list_auxiliary_states()
-    # arg_shapes, _, aux_shapes = discriminatorSymbol.infer_shape(A=train_data.provide_data[0][1],
-    #                                                             B=train_data.provide_data[1][1],
-    #                                                             label=(batch_size,))
-    #
-    # if batch_size == 1:
-    #     for idx, arg_name in enumerate(arg_names):
-    #         if 'weight' in arg_name:
-    #             arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
-    #         elif 'gamma' in arg_name:
-    #             arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
-    #         elif 'bias' in arg_name:
-    #             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-    #         elif 'beta' in arg_name:
-    #             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-    #         else:
-    #             # raise NameError('Unknown parameter name.')
-    #             pass
-    # else:
-    #     for idx, arg_name in enumerate(arg_names):
-    #         if 'weight' in arg_name:
-    #             arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
-    #         elif 'gamma' in arg_name:
-    #             arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
-    #         elif 'bias' in arg_name:
-    #             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-    #         elif 'beta' in arg_name:
-    #             arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-    #         else:
-    #             # raise NameError('Unknown parameter name.')
-    #             pass
-    #     for idx, aux_name in enumerate(aux_names):
-    #         aux_params[aux_name] = mx.nd.zeros(shape=aux_shapes[idx])
+    arg_params = {}
+    aux_params = {}
+    arg_names = discriminatorSymbol.list_arguments()
+    aux_names = discriminatorSymbol.list_auxiliary_states()
+    arg_shapes, _, aux_shapes = discriminatorSymbol.infer_shape(A=train_data.provide_data[0][1],
+                                                                B=train_data.provide_data[1][1],
+                                                                label=(batch_size,))
 
-    discriminator.init_params(initializer=mx.init.Normal(sigma))
-    # discriminator.init_params(arg_params=arg_params, aux_params=aux_params)
+    if batch_size == 1:
+        for idx, arg_name in enumerate(arg_names):
+            if 'weight' in arg_name:
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
+            elif 'gamma' in arg_name:
+                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+            elif 'bias' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            elif 'beta' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            else:
+                # raise NameError('Unknown parameter name.')
+                pass
+    else:
+        for idx, arg_name in enumerate(arg_names):
+            if 'weight' in arg_name:
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
+            elif 'gamma' in arg_name:
+                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+            elif 'bias' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            elif 'beta' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            else:
+                # raise NameError('Unknown parameter name.')
+                pass
+        for idx, aux_name in enumerate(aux_names):
+            if 'mean' in aux_name:
+                aux_params[aux_name] = mx.nd.zeros(shape=aux_shapes[idx])
+            elif 'var' in aux_name:
+                aux_params[aux_name] = mx.nd.ones(shape=aux_shapes[idx])
+            else:
+                raise NameError('Unknown aux_name.')
+
+    # discriminator.init_params(initializer=mx.init.Normal(sigma))
+    discriminator.init_params(arg_params=arg_params, aux_params=aux_params)
 
     # gradient is scaled in LogisticRegression layer, no need to rescale gradient
     if lr_scheduler_d is not None:
