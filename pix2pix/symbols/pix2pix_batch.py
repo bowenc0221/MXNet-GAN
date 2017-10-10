@@ -8,7 +8,7 @@ def defineG_encoder_decoder_batch(cfg):
     ngf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_status = True
+    use_global_stats = True
 
     real_A = mx.sym.Variable(name='A')
     real_B = mx.sym.Variable(name='B')
@@ -21,37 +21,37 @@ def defineG_encoder_decoder_batch(cfg):
     down_relu2 = mx.sym.LeakyReLU(data=down_conv1, act_type='leaky', slope=0.2, name='down_relu2')
     down_conv2 = mx.sym.Convolution(data=down_relu2, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 2,
                                     no_bias=True, name='down_conv2')
-    down_norm2 = mx.sym.BatchNorm(data=down_conv2, eps=eps, use_global_status=use_global_status, name='down_norm2')
+    down_norm2 = mx.sym.BatchNorm(data=down_conv2, eps=eps, use_global_stats=use_global_stats, name='down_norm2')
 
     # --- e3 ---- input is (ngf * 2) x 64 x 64
     down_relu3 = mx.sym.LeakyReLU(data=down_norm2, act_type='leaky', slope=0.2, name='down_relu3')
     down_conv3 = mx.sym.Convolution(data=down_relu3, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 4,
                                     no_bias=True, name='down_conv3')
-    down_norm3 = mx.sym.BatchNorm(data=down_conv3, eps=eps, use_global_status=use_global_status, name='down_norm3')
+    down_norm3 = mx.sym.BatchNorm(data=down_conv3, eps=eps, use_global_stats=use_global_stats, name='down_norm3')
 
     # --- e4 ---- input is (ngf * 4) x 32 x 32
     down_relu4 = mx.sym.LeakyReLU(data=down_norm3, act_type='leaky', slope=0.2, name='down_relu4')
     down_conv4 = mx.sym.Convolution(data=down_relu4, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='down_conv4')
-    down_norm4 = mx.sym.BatchNorm(data=down_conv4, eps=eps, use_global_status=use_global_status, name='down_norm4')
+    down_norm4 = mx.sym.BatchNorm(data=down_conv4, eps=eps, use_global_stats=use_global_stats, name='down_norm4')
 
     # --- e5 ---- input is (ngf * 8) x 16 x 16
     down_relu5 = mx.sym.LeakyReLU(data=down_norm4, act_type='leaky', slope=0.2, name='down_relu5')
     down_conv5 = mx.sym.Convolution(data=down_relu5, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='down_conv5')
-    down_norm5 = mx.sym.BatchNorm(data=down_conv5, eps=eps, use_global_status=use_global_status, name='down_norm5')
+    down_norm5 = mx.sym.BatchNorm(data=down_conv5, eps=eps, use_global_stats=use_global_stats, name='down_norm5')
 
     # --- e6 ---- input is (ngf * 8) x 8 x 8
     down_relu6 = mx.sym.LeakyReLU(data=down_norm5, act_type='leaky', slope=0.2, name='down_relu6')
     down_conv6 = mx.sym.Convolution(data=down_relu6, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='down_conv6')
-    down_norm6 = mx.sym.BatchNorm(data=down_conv6, eps=eps, use_global_status=use_global_status, name='down_norm6')
+    down_norm6 = mx.sym.BatchNorm(data=down_conv6, eps=eps, use_global_stats=use_global_stats, name='down_norm6')
 
     # --- e7 ---- input is (ngf * 8) x 4 x 4
     down_relu7 = mx.sym.LeakyReLU(data=down_norm6, act_type='leaky', slope=0.2, name='down_relu7')
     down_conv7 = mx.sym.Convolution(data=down_relu7, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='down_conv7')
-    down_norm7 = mx.sym.BatchNorm(data=down_conv7, eps=eps, use_global_status=use_global_status, name='down_norm7')
+    down_norm7 = mx.sym.BatchNorm(data=down_conv7, eps=eps, use_global_stats=use_global_stats, name='down_norm7')
 
     # --- e8 ---- input is (ngf * 8) x 2 x 2
     down_relu8 = mx.sym.LeakyReLU(data=down_norm7, act_type='leaky', slope=0.2, name='down_relu8')
@@ -62,46 +62,46 @@ def defineG_encoder_decoder_batch(cfg):
     up_relu8 = mx.sym.Activation(data=down_conv8, act_type='relu', name='up_relu8')
     up_conv8 = mx.sym.Deconvolution(data=up_relu8, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv8')
-    up_norm8 = mx.sym.BatchNorm(data=up_conv8, eps=eps, use_global_status=use_global_status, name='up_norm8')
+    up_norm8 = mx.sym.BatchNorm(data=up_conv8, eps=eps, use_global_stats=use_global_stats, name='up_norm8')
     up_drop8 = mx.sym.Dropout(data=up_norm8, p=0.5, mode='always', name='up_drop8')
 
     # --- d2 ---- input is (ngf * 8) x 2 x 2
     up_relu7 = mx.sym.Activation(data=up_drop8, act_type='relu', name='up_relu7')
     up_conv7 = mx.sym.Deconvolution(data=up_relu7, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv7')
-    up_norm7 = mx.sym.BatchNorm(data=up_conv7, eps=eps, use_global_status=use_global_status, name='up_norm7')
+    up_norm7 = mx.sym.BatchNorm(data=up_conv7, eps=eps, use_global_stats=use_global_stats, name='up_norm7')
     up_drop7 = mx.sym.Dropout(data=up_norm7, p=0.5, mode='always', name='up_drop7')
 
     # --- d3 ---- input is (ngf * 8) x 4 x 4
     up_relu6 = mx.sym.Activation(data=up_drop7, act_type='relu', name='up_relu6')
     up_conv6 = mx.sym.Deconvolution(data=up_relu6, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv6')
-    up_norm6 = mx.sym.BatchNorm(data=up_conv6, eps=eps, use_global_status=use_global_status, name='up_norm6')
+    up_norm6 = mx.sym.BatchNorm(data=up_conv6, eps=eps, use_global_stats=use_global_stats, name='up_norm6')
     up_drop6 = mx.sym.Dropout(data=up_norm6, p=0.5, mode='always', name='up_drop6')
 
     # --- d4 ---- input is (ngf * 8) x 8 x 8
     up_relu5 = mx.sym.Activation(data=up_drop6, act_type='relu', name='up_relu5')
     up_conv5 = mx.sym.Deconvolution(data=up_relu5, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv5')
-    up_norm5 = mx.sym.BatchNorm(data=up_conv5, eps=eps, use_global_status=use_global_status, name='up_norm5')
+    up_norm5 = mx.sym.BatchNorm(data=up_conv5, eps=eps, use_global_stats=use_global_stats, name='up_norm5')
 
     # --- d5 ---- input is (ngf * 8) x 16 x 16
     up_relu4 = mx.sym.Activation(data=up_norm5, act_type='relu', name='up_relu4')
     up_conv4 = mx.sym.Deconvolution(data=up_relu4, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 4,
                                     no_bias=True, name='up_conv4')
-    up_norm4 = mx.sym.BatchNorm(data=up_conv4, eps=eps, use_global_status=use_global_status, name='up_norm4')
+    up_norm4 = mx.sym.BatchNorm(data=up_conv4, eps=eps, use_global_stats=use_global_stats, name='up_norm4')
 
     # --- d6 ---- input is (ngf * 4) x 32 x 32
     up_relu3 = mx.sym.Activation(data=up_norm4, act_type='relu', name='up_relu3')
     up_conv3 = mx.sym.Deconvolution(data=up_relu3, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 2,
                                     no_bias=True, name='up_conv3')
-    up_norm3 = mx.sym.BatchNorm(data=up_conv3, eps=eps, use_global_status=use_global_status, name='up_norm3')
+    up_norm3 = mx.sym.BatchNorm(data=up_conv3, eps=eps, use_global_stats=use_global_stats, name='up_norm3')
 
     # --- d7 ---- input is (ngf * 2) x 64 x 64
     up_relu2 = mx.sym.Activation(data=up_norm3, act_type='relu', name='up_relu2')
     up_conv2 = mx.sym.Deconvolution(data=up_relu2, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf,
                                     no_bias=True, name='up_conv2')
-    up_norm2 = mx.sym.BatchNorm(data=up_conv2, eps=eps, use_global_status=use_global_status, name='up_norm2')
+    up_norm2 = mx.sym.BatchNorm(data=up_conv2, eps=eps, use_global_stats=use_global_stats, name='up_norm2')
 
     # --- d8 ---- input is (ngf) x128 x 128
     up_relu1 = mx.sym.Activation(data=up_norm2, act_type='relu', name='up_relu1')
@@ -121,7 +121,7 @@ def defineG_unet_batch(cfg):
     ngf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_status = True
+    use_global_stats = True
 
     real_A = mx.sym.Variable(name='A')
     real_B = mx.sym.Variable(name='B')
@@ -134,37 +134,37 @@ def defineG_unet_batch(cfg):
     down_relu2 = mx.sym.LeakyReLU(data=down_conv1, act_type='leaky', slope=0.2, name='down_relu2')
     down_conv2 = mx.sym.Convolution(data=down_relu2, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 2,
                                     no_bias=True, name='down_conv2')
-    down_norm2 = mx.sym.BatchNorm(data=down_conv2, eps=eps, use_global_status=use_global_status, name='down_norm2')
+    down_norm2 = mx.sym.BatchNorm(data=down_conv2, eps=eps, use_global_stats=use_global_stats, name='down_norm2')
 
     # --- e3 ---- input is (ngf * 2) x 64 x 64
     down_relu3 = mx.sym.LeakyReLU(data=down_norm2, act_type='leaky', slope=0.2, name='down_relu3')
     down_conv3 = mx.sym.Convolution(data=down_relu3, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 4,
                                     no_bias=True, name='down_conv3')
-    down_norm3 = mx.sym.BatchNorm(data=down_conv3, eps=eps, use_global_status=use_global_status, name='down_norm3')
+    down_norm3 = mx.sym.BatchNorm(data=down_conv3, eps=eps, use_global_stats=use_global_stats, name='down_norm3')
 
     # --- e4 ---- input is (ngf * 4) x 32 x 32
     down_relu4 = mx.sym.LeakyReLU(data=down_norm3, act_type='leaky', slope=0.2, name='down_relu4')
     down_conv4 = mx.sym.Convolution(data=down_relu4, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='down_conv4')
-    down_norm4 = mx.sym.BatchNorm(data=down_conv4, eps=eps, use_global_status=use_global_status, name='down_norm4')
+    down_norm4 = mx.sym.BatchNorm(data=down_conv4, eps=eps, use_global_stats=use_global_stats, name='down_norm4')
 
     # --- e5 ---- input is (ngf * 8) x 16 x 16
     down_relu5 = mx.sym.LeakyReLU(data=down_norm4, act_type='leaky', slope=0.2, name='down_relu5')
     down_conv5 = mx.sym.Convolution(data=down_relu5, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='down_conv5')
-    down_norm5 = mx.sym.BatchNorm(data=down_conv5, eps=eps, use_global_status=use_global_status, name='down_norm5')
+    down_norm5 = mx.sym.BatchNorm(data=down_conv5, eps=eps, use_global_stats=use_global_stats, name='down_norm5')
 
     # --- e6 ---- input is (ngf * 8) x 8 x 8
     down_relu6 = mx.sym.LeakyReLU(data=down_norm5, act_type='leaky', slope=0.2, name='down_relu6')
     down_conv6 = mx.sym.Convolution(data=down_relu6, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='down_conv6')
-    down_norm6 = mx.sym.BatchNorm(data=down_conv6, eps=eps, use_global_status=use_global_status, name='down_norm6')
+    down_norm6 = mx.sym.BatchNorm(data=down_conv6, eps=eps, use_global_stats=use_global_stats, name='down_norm6')
 
     # --- e7 ---- input is (ngf * 8) x 4 x 4
     down_relu7 = mx.sym.LeakyReLU(data=down_norm6, act_type='leaky', slope=0.2, name='down_relu7')
     down_conv7 = mx.sym.Convolution(data=down_relu7, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='down_conv7')
-    down_norm7 = mx.sym.BatchNorm(data=down_conv7, eps=eps, use_global_status=use_global_status, name='down_norm7')
+    down_norm7 = mx.sym.BatchNorm(data=down_conv7, eps=eps, use_global_stats=use_global_stats, name='down_norm7')
 
     # --- e8 ---- input is (ngf * 8) x 2 x 2
     down_relu8 = mx.sym.LeakyReLU(data=down_norm7, act_type='leaky', slope=0.2, name='down_relu8')
@@ -175,7 +175,7 @@ def defineG_unet_batch(cfg):
     up_relu8 = mx.sym.Activation(data=down_conv8, act_type='relu', name='up_relu8')
     up_conv8 = mx.sym.Deconvolution(data=up_relu8, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv8')
-    up_norm8 = mx.sym.BatchNorm(data=up_conv8, eps=eps, use_global_status=use_global_status, name='up_norm8')
+    up_norm8 = mx.sym.BatchNorm(data=up_conv8, eps=eps, use_global_stats=use_global_stats, name='up_norm8')
     up_drop8 = mx.sym.Dropout(data=up_norm8, p=0.5, mode='always', name='up_drop8')
 
     d1 = mx.sym.concat(up_drop8, down_norm7, dim=1, name='d1')
@@ -184,7 +184,7 @@ def defineG_unet_batch(cfg):
     up_relu7 = mx.sym.Activation(data=d1, act_type='relu', name='up_relu7')
     up_conv7 = mx.sym.Deconvolution(data=up_relu7, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv7')
-    up_norm7 = mx.sym.BatchNorm(data=up_conv7, eps=eps, use_global_status=use_global_status, name='up_norm7')
+    up_norm7 = mx.sym.BatchNorm(data=up_conv7, eps=eps, use_global_stats=use_global_stats, name='up_norm7')
     up_drop7 = mx.sym.Dropout(data=up_norm7, p=0.5, mode='always', name='up_drop7')
 
     d2 = mx.sym.concat(up_drop7, down_norm6, dim=1, name='d2')
@@ -193,7 +193,7 @@ def defineG_unet_batch(cfg):
     up_relu6 = mx.sym.Activation(data=d2, act_type='relu', name='up_relu6')
     up_conv6 = mx.sym.Deconvolution(data=up_relu6, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv6')
-    up_norm6 = mx.sym.BatchNorm(data=up_conv6, eps=eps, use_global_status=use_global_status, name='up_norm6')
+    up_norm6 = mx.sym.BatchNorm(data=up_conv6, eps=eps, use_global_stats=use_global_stats, name='up_norm6')
     up_drop6 = mx.sym.Dropout(data=up_norm6, p=0.5, mode='always', name='up_drop6')
 
     d3 = mx.sym.concat(up_drop6, down_norm5, dim=1, name='d3')
@@ -202,7 +202,7 @@ def defineG_unet_batch(cfg):
     up_relu5 = mx.sym.Activation(data=d3, act_type='relu', name='up_relu5')
     up_conv5 = mx.sym.Deconvolution(data=up_relu5, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 8,
                                     no_bias=True, name='up_conv5')
-    up_norm5 = mx.sym.BatchNorm(data=up_conv5, eps=eps, use_global_status=use_global_status, name='up_norm5')
+    up_norm5 = mx.sym.BatchNorm(data=up_conv5, eps=eps, use_global_stats=use_global_stats, name='up_norm5')
 
     d4 = mx.sym.concat(up_norm5, down_norm4, dim=1, name='d4')
 
@@ -210,7 +210,7 @@ def defineG_unet_batch(cfg):
     up_relu4 = mx.sym.Activation(data=d4, act_type='relu', name='up_relu4')
     up_conv4 = mx.sym.Deconvolution(data=up_relu4, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 4,
                                     no_bias=True, name='up_conv4')
-    up_norm4 = mx.sym.BatchNorm(data=up_conv4, eps=eps, use_global_status=use_global_status, name='up_norm4')
+    up_norm4 = mx.sym.BatchNorm(data=up_conv4, eps=eps, use_global_stats=use_global_stats, name='up_norm4')
 
     d5 = mx.sym.concat(up_norm4, down_norm3, dim=1, name='d5')
 
@@ -218,7 +218,7 @@ def defineG_unet_batch(cfg):
     up_relu3 = mx.sym.Activation(data=d5, act_type='relu', name='up_relu3')
     up_conv3 = mx.sym.Deconvolution(data=up_relu3, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf * 2,
                                     no_bias=True, name='up_conv3')
-    up_norm3 = mx.sym.BatchNorm(data=up_conv3, eps=eps, use_global_status=use_global_status, name='up_norm3')
+    up_norm3 = mx.sym.BatchNorm(data=up_conv3, eps=eps, use_global_stats=use_global_stats, name='up_norm3')
 
     d6 = mx.sym.concat(up_norm3, down_norm2, dim=1, name='d6')
 
@@ -226,7 +226,7 @@ def defineG_unet_batch(cfg):
     up_relu2 = mx.sym.Activation(data=d6, act_type='relu', name='up_relu2')
     up_conv2 = mx.sym.Deconvolution(data=up_relu2, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ngf,
                                     no_bias=True, name='up_conv2')
-    up_norm2 = mx.sym.BatchNorm(data=up_conv2, eps=eps, use_global_status=use_global_status, name='up_norm2')
+    up_norm2 = mx.sym.BatchNorm(data=up_conv2, eps=eps, use_global_stats=use_global_stats, name='up_norm2')
 
     d7 = mx.sym.concat(up_norm2, down_conv1, dim=1, name='d7')
 
@@ -252,7 +252,7 @@ def defineD_pixelGAN_batch(batch_size):
     ndf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_status = True
+    use_global_stats = True
 
     real_A = mx.sym.Variable(name='A')
     B = mx.sym.Variable(name='B')
@@ -270,7 +270,7 @@ def defineD_pixelGAN_batch(batch_size):
     # d2
     d2_conv = mx.sym.Convolution(data=d1_relu, kernel=(1, 1), stride=(1, 1), pad=(0, 0), num_filter=ndf * 2,
                                  no_bias=True, name='d2_conv')
-    d2_norm = mx.sym.BatchNorm(data=d2_conv, eps=eps, use_global_status=use_global_status, name='d2_norm')
+    d2_norm = mx.sym.BatchNorm(data=d2_conv, eps=eps, use_global_stats=use_global_stats, name='d2_norm')
     d2_relu = mx.sym.LeakyReLU(data=d2_norm, act_type='leaky', slope=0.2, name='d2_relu')
 
     # d3
@@ -302,7 +302,7 @@ def defineD_n_layers_batch(n_layers, batch_size):
     ndf = 64
     eps = 1e-5 + 1e-12
 
-    use_global_status = True
+    use_global_stats = True
 
     real_A = mx.sym.Variable(name='A')
     B = mx.sym.Variable(name='B')
@@ -321,14 +321,14 @@ def defineD_n_layers_batch(n_layers, batch_size):
         nf_mult = min(2 ** n, 8)
         conv =  mx.sym.Convolution(data=relu, kernel=(4, 4), stride=(2, 2), pad=(1, 1), num_filter=ndf * nf_mult,
                                    name='d%d_conv' % n)
-        norm = mx.sym.BatchNorm(data=conv, eps=eps, use_global_status=use_global_status, name='d%d_norm' % n)
+        norm = mx.sym.BatchNorm(data=conv, eps=eps, use_global_stats=use_global_stats, name='d%d_norm' % n)
         relu = mx.sym.LeakyReLU(data=norm, act_type='leaky', slope=0.2, name='d%d_relu' % n)
 
     nf_mult = min(2 ** n_layers, 8)
 
     conv = mx.sym.Convolution(data=relu, kernel=(4, 4), stride=(1, 1), pad=(1, 1), num_filter=ndf * nf_mult,
                               name='d%d_conv' % n_layers)
-    norm = mx.sym.BatchNorm(data=conv, eps=eps, use_global_status=use_global_status, name='d%d_norm' % n_layers)
+    norm = mx.sym.BatchNorm(data=conv, eps=eps, use_global_stats=use_global_stats, name='d%d_norm' % n_layers)
     relu = mx.sym.LeakyReLU(data=norm, act_type='leaky', slope=0.2, name='d%d_relu' % n_layers)
 
     conv = mx.sym.Convolution(data=relu, kernel=(4, 4), stride=(1, 1), pad=(1, 1), num_filter=1,
