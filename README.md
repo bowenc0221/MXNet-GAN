@@ -1,5 +1,9 @@
-# MXNet-GAN
+# pix2pix in MXNet
 MXNet Implementation of various GAN, including: DCGAN [1], CGAN [2], Image-to-Image translation [3] (a.k.a. pix2pix)  
+
+The main focus of the repo is to implement a MXNet version of pix2pix for research purpose.  
+Please refer to [This paper](https://arxiv.org/abs/1611.07004) by Isola et al. for more detail.  
+Here is the original code implemented by [Torch](https://github.com/phillipi/pix2pix) and [PyTorch](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix)  
 
 This is a working repo initially served as the final project for [UIUC ECE544NA](https://courses.engr.illinois.edu/ece544na/fa2017/_site/).  
 
@@ -93,9 +97,30 @@ This is a working repo initially served as the final project for [UIUC ECE544NA]
   - I only implemented pix2pix for cityscapes and facades dataset but you can generalize easily to your own dataset.
   - Prepare pix2pix-datasets according to [this link](https://github.com/bowenc0221/pytorch-CycleGAN-and-pix2pix/blob/master/README.md#pix2pix-datasets)
   - Modify ```num_train``` and ```num_val``` in ```./data/generate_train_val.py``` and run the script.
-  - In configuration file, modify ```dataset``` part.
-- Warning
-  - Currently, I only implemented ```batch_size = 1```.
+  - In configuration file, modify ```dataset``` part, as well as batchsize and number of epoch.
+
+## Results
+### facades
+#### AtoB
+#### BtoA
+### cityscapes
+#### AtoB
+#### BtoA
+### edges2shoes
+#### AtoB
+#### BtoA
+
+## Citation
+If you use this code for your research, please cite our paper <a href="https://arxiv.org/pdf/1611.07004v1.pdf">Image-to-Image Translation Using Conditional Adversarial Networks</a>:
+
+```
+@article{pix2pix2016,
+  title={Image-to-Image Translation with Conditional Adversarial Networks},
+  author={Isola, Phillip and Zhu, Jun-Yan and Zhou, Tinghui and Efros, Alexei A},
+  journal={arxiv},
+  year={2016}
+}
+```
 
 ## Reference
 [1] [DCGAN](https://arxiv.org/abs/1511.06434): Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks  
