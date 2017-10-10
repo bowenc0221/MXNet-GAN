@@ -272,23 +272,25 @@ def defineD_pixelGAN():
                                  name='d3_conv')
 
     d3 = mx.sym.Flatten(d3_conv)
-    d3 = mx.sym.reshape(d3, shape=(-1, 1))
-    label = mx.sym.broadcast_to(label, shape=(65536, 1))
+    # d3 = mx.sym.reshape(d3, shape=(-1, 1))
+    label = mx.sym.broadcast_to(label, shape=(1, 65536))
 
     discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d3, label=label, name='dloss')
 
     return discriminatorSymbol
 
 def defineD_n_layers(n_layers):
-    # if n = 0, then
-    # use
-    # pixelGAN(rf=1)
-    # else rf is 16 if n = 1
-    #            34 if n = 2
-    #            70 if n = 3
-    #            142 if n = 4
-    #            286 if n = 5
-    #            574 if n = 6
+    """
+        if n = 0, then
+        use
+        pixelGAN(rf=1)
+        else rf is 16 if n = 1
+                   34 if n = 2
+                   70 if n = 3
+                   142 if n = 4
+                   286 if n = 5
+                   574 if n = 6
+    """
     assert n_layers <= 6
     if n_layers == 0:
         return defineD_pixelGAN()

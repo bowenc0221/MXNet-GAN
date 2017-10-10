@@ -278,23 +278,25 @@ def defineD_pixelGAN_batch(batch_size):
                                  name='d3_conv')
 
     d3 = mx.sym.Flatten(d3_conv)
-    d3 = mx.sym.reshape(d3, shape=(-1, 1))
-    label = mx.sym.tile(label, reps=(65536, 1))
+    # d3 = mx.sym.reshape(d3, shape=(-1, 1))
+    label = mx.sym.broadcast_to(label, shape=(1, 65536))
 
     discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d3, label=label, name='dloss')
 
     return discriminatorSymbol
 
 def defineD_n_layers_batch(n_layers, batch_size):
-    # if n = 0, then
-    # use
-    # pixelGAN(rf=1)
-    # else rf is 16 if n = 1
-    #            34 if n = 2
-    #            70 if n = 3
-    #            142 if n = 4
-    #            286 if n = 5
-    #            574 if n = 6
+    """
+        if n = 0, then
+        use
+        pixelGAN(rf=1)
+        else rf is 16 if n = 1
+                   34 if n = 2
+                   70 if n = 3
+                   142 if n = 4
+                   286 if n = 5
+                   574 if n = 6
+    """
     assert n_layers <= 6
     if n_layers == 0:
         return defineD_pixelGAN_batch(batch_size)
@@ -335,21 +337,21 @@ def defineD_n_layers_batch(n_layers, batch_size):
                               name='d%d_conv' % (n_layers + 1))
 
     d = mx.sym.Flatten(conv)
-    d = mx.sym.reshape(d, shape=(-1, 1))
+    # d = mx.sym.reshape(d, shape=(-1, 1))
     if n_layers == 0:
         pass
     elif n_layers == 1:
-        label = mx.sym.tile(label, reps=(15876, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 15876))
     elif n_layers == 2:
-        label = mx.sym.tile(label, reps=(3844, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 3844))
     elif n_layers == 3:
-        label = mx.sym.tile(label, reps=(900, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 900))
     elif n_layers == 4:
-        label = mx.sym.tile(label, reps=(196, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 196))
     elif n_layers == 5:
-        label = mx.sym.tile(label, reps=(36, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 36))
     elif n_layers == 6:
-        label = mx.sym.tile(label, reps=(4, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 4))
 
     discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d, label=label, name='dloss')
 
