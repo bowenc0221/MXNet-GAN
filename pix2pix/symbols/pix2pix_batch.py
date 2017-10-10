@@ -279,7 +279,7 @@ def defineD_pixelGAN_batch(batch_size):
 
     d3 = mx.sym.Flatten(d3_conv)
     # d3 = mx.sym.reshape(d3, shape=(-1, 1))
-    label = mx.sym.broadcast_to(label, shape=(1, 65536))
+    label = mx.sym.broadcast_to(label, shape=(batch_size, 65536))
 
     discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d3, label=label, name='dloss')
 
@@ -341,17 +341,17 @@ def defineD_n_layers_batch(n_layers, batch_size):
     if n_layers == 0:
         pass
     elif n_layers == 1:
-        label = mx.sym.broadcast_to(label, shape=(1, 15876))
+        label = mx.sym.broadcast_to(label, shape=(batch_size, 15876))
     elif n_layers == 2:
-        label = mx.sym.broadcast_to(label, shape=(1, 3844))
+        label = mx.sym.broadcast_to(label, shape=(batch_size, 3844))
     elif n_layers == 3:
-        label = mx.sym.broadcast_to(label, shape=(1, 900))
+        label = mx.sym.broadcast_to(label, shape=(batch_size, 900))
     elif n_layers == 4:
-        label = mx.sym.broadcast_to(label, shape=(1, 196))
+        label = mx.sym.broadcast_to(label, shape=(batch_size, 196))
     elif n_layers == 5:
-        label = mx.sym.broadcast_to(label, shape=(1, 36))
+        label = mx.sym.broadcast_to(label, shape=(batch_size, 36))
     elif n_layers == 6:
-        label = mx.sym.broadcast_to(label, shape=(1, 4))
+        label = mx.sym.broadcast_to(label, shape=(batch_size, 4))
 
     discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d, label=label, name='dloss')
 
