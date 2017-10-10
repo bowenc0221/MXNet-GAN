@@ -100,16 +100,16 @@ def main():
             generatorSymbol = defineG_unet_batch(config)
         else:
             raise NotImplemented
-    # debug = True
-    # if debug:
-    #     generatorGroup = generatorSymbol.get_internals()
-    #     name_list = generatorGroup.list_outputs()
-    #     out_name = []
-    #     for name in name_list:
-    #         if 'output' in name:
-    #             out_name += [generatorGroup[name]]
-    #     out_group = mx.sym.Group(out_name)
-    #     out_shapes = out_group.infer_shape(A=(1, 3, 256, 256))
+    debug = True
+    if debug:
+        generatorGroup = generatorSymbol.get_internals()
+        name_list = generatorGroup.list_outputs()
+        out_name = []
+        for name in name_list:
+            if 'output' in name:
+                out_name += [generatorGroup[name]]
+        out_group = mx.sym.Group(out_name)
+        out_shapes = out_group.infer_shape(A=(4, 3, 256, 256))
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
     generator.bind(data_shapes=train_data.provide_data)
 
