@@ -267,7 +267,7 @@ def main():
     mG = metric.CrossEntropyMetric()
     mD = metric.CrossEntropyMetric()
     mACC = metric.AccMetric()
-    mL1 = metric.L1LossMetric()
+    mL1 = metric.L1LossMetric(config)
 
     t_accumulate = 0
 

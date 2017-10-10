@@ -8,6 +8,7 @@ class AccMetric(mx.metric.EvalMetric):
     def update(self, labels, preds):
         pred = preds[0].asnumpy().ravel()
         label = labels[0].asnumpy().ravel()
+        label = np.tile(label, len(pred) / len(label))
 
         self.sum_metric += np.sum((pred > 0.5) == label)
         self.num_inst += len(pred)
@@ -19,6 +20,7 @@ class CrossEntropyMetric(mx.metric.EvalMetric):
     def update(self, labels, preds):
         pred = preds[0].asnumpy().ravel()
         label = labels[0].asnumpy().ravel()
+        label = np.tile(label, len(pred)/len(label))
 
         ce = -(label * np.log(pred + 1e-12) + (1. - label) * np.log(1. - pred + 1e-12))
 
@@ -26,11 +28,12 @@ class CrossEntropyMetric(mx.metric.EvalMetric):
         self.num_inst += len(pred)
 
 class L1LossMetric(mx.metric.EvalMetric):
-    def __init__(self):
+    def __init__(self, cfg):
         super(L1LossMetric, self).__init__('L1Loss')
+        self.lambda_l1 = cfg.TRAIN.lambda_l1
 
     def update(self, labels, preds):
         l1loss = preds[0].asnumpy()
 
-        self.sum_metric += np.sum(l1loss)
+        self.sum_metric += np.sum(l1loss)*self.lambda_l1
         self.num_inst += l1loss.shape[0]
