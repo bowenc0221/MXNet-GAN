@@ -251,7 +251,7 @@ def main():
                 'learning_rate': lr / 2.0,
                 'lr_scheduler': lr_scheduler_d,
                 'beta1': beta1,
-                'rescale_grad': 1.0 / batch_size
+                'rescale_grad': 1.0
             })
     else:
         discriminator.init_optimizer(
@@ -259,7 +259,7 @@ def main():
             optimizer_params={
                 'learning_rate': lr / 2.0,
                 'beta1': beta1,
-                'rescale_grad': 1.0 / batch_size
+                'rescale_grad': 1.0
             })
     mods.append(discriminator)
 
