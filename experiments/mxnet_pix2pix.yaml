@@ -13,7 +13,7 @@ default:
   frequent: 10
   kvstore: device
 dataset:
-  dataset: 'facades'
+  dataset: 'edges2shoes'
   root: './data'
   imageset: 'train'
   image_root: './datasets'
