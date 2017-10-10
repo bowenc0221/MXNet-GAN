@@ -30,11 +30,10 @@ import shutil
 import numpy as np
 import mxnet as mx
 
-from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance_autoencoder, get_symbol_generator_instance_unet, get_symbol_discriminator
-from symbols.pix2pix_original import defineG_encoder_decoder, defineG_unet
+from symbols.pix2pix_instance import defineG_encoder_decoder, defineG_unet, defineD_n_layers, defineD_basic
+from symbols.pix2pix_batch import defineG_encoder_decoder_batch, defineG_unet_batch, defineD_n_layers_batch, defineD_basic_batch
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
-from core.visualize import visualize
 
 def main():
     # =============setting============
@@ -77,23 +76,33 @@ def main():
         else:
             raise NotImplemented
     else:
-        generatorSymbol = get_symbol_generator()
+        if config.netG == 'autoencoder':
+            generatorSymbol = defineG_encoder_decoder_batch(config)
+        elif config.netG == 'unet':
+            generatorSymbol = defineG_unet_batch(config)
+        else:
+            raise NotImplemented
+
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
     generator.bind(data_shapes=test_data.provide_data)
     generator.load_params(prefix + '-generator-%04d.params' % epoch)
 
-    test_data.reset()
-    # batch = test_data.next()
-    # generator.forward(batch, is_train=False)
-    # outG = generator.get_outputs()
-    # visualize(batch.data[0].asnumpy(), batch.data[1].asnumpy(), outG[1].asnumpy(), test_fig_prefix + '-test-%04d.png' % epoch)
+    if batch_size > 1:
+        # use test set statistic by setting mean and variance to zero
+        aux_names = generatorSymbol.list_auxiliary_states()
+        arg_params, aux_params = generator.get_params()
+        for aux_name in aux_names:
+            aux_params[aux_name] = mx.nd.zeros_like(aux_params[aux_name])
+        generator.set_params(arg_params=arg_params, aux_params=aux_params)
 
-    count = 0
+    test_data.reset()
+    count = 1
     for batch in test_data:
         generator.forward(batch, is_train=False)
         outG = generator.get_outputs()[1].asnumpy()
         fake_B = outG.transpose((0, 2, 3, 1))
         fake_B = np.clip((fake_B + 1.0) * (255.0 / 2.0), 0, 255).astype(np.uint8)
-        fname = test_fig_prefix + '-test-%04d-%06d.png' % (epoch, count)
-        count += 1
-        io.imsave(fname, fake_B[0])
+        for n in range(batch_size):
+            fname = test_fig_prefix + '-test-%04d-%06d.png' % (epoch, count + n)
+            io.imsave(fname, fake_B[0])
+        count += batch_size

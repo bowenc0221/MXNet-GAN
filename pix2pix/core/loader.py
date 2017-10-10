@@ -25,7 +25,7 @@ class pix2pixIter(mx.io.DataIter):
         self.shuffle = shuffle
 
         self.batch_size = config.TRAIN.BATCH_SIZE
-        assert self.batch_size == 1
+        # assert self.batch_size == 1
 
         self.AtoB = config.AtoB
         self.A = None
@@ -36,10 +36,11 @@ class pix2pixIter(mx.io.DataIter):
     @property
     def provide_data(self):
         if self.is_train:
-            return [('A', (1, 3, self.config.fineSize, self.config.fineSize)),
-                    ('B', (1, 3, self.config.fineSize, self.config.fineSize))]
+            return [('A', (self.batch_size, 3, self.config.fineSize, self.config.fineSize)),
+                    ('B', (self.batch_size, 3, self.config.fineSize, self.config.fineSize))]
         else:
-            return [('A', self.A.shape), ('B', self.A.shape)]
+            return [('A', (self.batch_size, 3, self.config.TEST.img_h, self.config.TEST.img_w)),
+                    ('B', (self.batch_size, 3, self.config.TEST.img_h, self.config.TEST.img_w))]
 
     @property
     def provide_label(self):
@@ -86,50 +87,63 @@ class pix2pixIter(mx.io.DataIter):
         return lines
 
     def get_batch(self):
-        # cur_from = self.cur
-        # cur_to = min(cur_from + self.batch_size, self.size)
-
-        index = self.cur
-        AB_path = os.path.join(self.image_root, self.image_files[index])
-        AB = cv2.imread(AB_path, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)
+        cur_from = self.cur
+        cur_to = min(cur_from + self.batch_size, self.size)
 
         if self.is_train:
-            AB = cv2.resize(AB, (self.config.loadSize * 2, self.config.loadSize), interpolation = cv2.INTER_CUBIC)
-
-            w_total = AB.shape[1]
-            w = int(w_total / 2)
-            h = AB.shape[0]
-            w_offset = np.random.randint(0, max(0, w - self.config.fineSize - 1))
-            h_offset = np.random.randint(0, max(0, h - self.config.fineSize - 1))
-
-            # random crop
-            A = AB[h_offset:h_offset + self.config.fineSize,
-                w_offset:w_offset + self.config.fineSize, :]
-            B = AB[h_offset:h_offset + self.config.fineSize,
-                w + w_offset:w + w_offset + self.config.fineSize, :]
-
-            if self.config.TRAIN.FLIP and np.random.random() < 0.5:
-                A = A[:, ::-1, :]
-                B = B[:, ::-1, :]
-
-            # H x W x C -> H x W x C x 1 -> 1 x C x H x W
-            A = np.transpose(A[..., np.newaxis], (3, 2, 0, 1))
-            B = np.transpose(B[..., np.newaxis], (3, 2, 0, 1))
+            batchA = np.zeros((0, 3, self.config.fineSize, self.config.fineSize))
+            batchB = np.zeros((0, 3, self.config.fineSize, self.config.fineSize))
         else:
-            w_total = AB.shape[1]
-            w = int(w_total / 2)
-            # h = AB.shape[0]
+            batchA = np.zeros((0, 3, self.config.TEST.img_h, self.config.TEST.img_w))
+            batchB = np.zeros((0, 3, self.config.TEST.img_h, self.config.TEST.img_w))
 
-            A = AB[:, :w, :]
-            B = AB[:, w:, :]
+        for index in range(cur_from, cur_to):
+            AB_path = os.path.join(self.image_root, self.image_files[index])
+            AB = cv2.imread(AB_path, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)
 
-            # H x W x C -> H x W x C x 1 -> 1 x C x H x W
-            A = np.transpose(A[..., np.newaxis], (3, 2, 0, 1))
-            B = np.transpose(B[..., np.newaxis], (3, 2, 0, 1))
+            if self.is_train:
+                AB = cv2.resize(AB, (self.config.loadSize * 2, self.config.loadSize), interpolation=cv2.INTER_CUBIC)
+
+                w_total = AB.shape[1]
+                w = int(w_total / 2)
+                h = AB.shape[0]
+                w_offset = np.random.randint(0, max(0, w - self.config.fineSize - 1))
+                h_offset = np.random.randint(0, max(0, h - self.config.fineSize - 1))
+
+                # random crop
+                A = AB[h_offset:h_offset + self.config.fineSize,
+                    w_offset:w_offset + self.config.fineSize, :]
+                B = AB[h_offset:h_offset + self.config.fineSize,
+                    w + w_offset:w + w_offset + self.config.fineSize, :]
+
+                if self.config.TRAIN.FLIP and np.random.random() < 0.5:
+                    A = A[:, ::-1, :]
+                    B = B[:, ::-1, :]
+
+                # H x W x C -> H x W x C x 1 -> 1 x C x H x W
+                A = np.transpose(A[..., np.newaxis], (3, 2, 0, 1))
+                B = np.transpose(B[..., np.newaxis], (3, 2, 0, 1))
+
+                batchA = np.concatenate((batchA, A), axis=0)
+                batchB = np.concatenate((batchB, B), axis=0)
+            else:
+                AB = cv2.resize(AB, (self.config.TEST.img_w * 2, self.config.TEST.img_h), interpolation=cv2.INTER_CUBIC)
+                w_total = AB.shape[1]
+                w = int(w_total / 2)
+
+                A = AB[:, :w, :]
+                B = AB[:, w:, :]
+
+                # H x W x C -> H x W x C x 1 -> 1 x C x H x W
+                A = np.transpose(A[..., np.newaxis], (3, 2, 0, 1))
+                B = np.transpose(B[..., np.newaxis], (3, 2, 0, 1))
+
+                batchA = np.concatenate((batchA, A), axis=0)
+                batchB = np.concatenate((batchB, B), axis=0)
 
         if self.AtoB:
-            self.A = A.astype(np.float32) / (255.0 / 2.0) - 1.0
-            self.B = B.astype(np.float32) / (255.0 / 2.0) - 1.0
+            self.A = batchA.astype(np.float32) / (255.0 / 2.0) - 1.0
+            self.B = batchB.astype(np.float32) / (255.0 / 2.0) - 1.0
         else:
-            self.B = A.astype(np.float32) / (255.0 / 2.0) - 1.0
-            self.A = B.astype(np.float32) / (255.0 / 2.0) - 1.0
+            self.B = batchA.astype(np.float32) / (255.0 / 2.0) - 1.0
+            self.A = batchB.astype(np.float32) / (255.0 / 2.0) - 1.0

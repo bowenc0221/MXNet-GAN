@@ -30,8 +30,8 @@ import shutil
 import numpy as np
 import mxnet as mx
 
-from symbols.pix2pix import get_symbol_generator, get_symbol_generator_instance_autoencoder, get_symbol_generator_instance_unet, get_symbol_discriminator, get_symbol_discriminator_instance
-from symbols.pix2pix_original import defineG_encoder_decoder, defineG_unet, defineD_n_layers, defineD_basic, defineD_pixelGAN
+from symbols.pix2pix_instance import defineG_encoder_decoder, defineG_unet, defineD_n_layers, defineD_basic
+from symbols.pix2pix_batch import defineG_encoder_decoder_batch, defineG_unet_batch, defineD_n_layers_batch, defineD_basic_batch
 from core.create_logger import create_logger
 from core.loader import pix2pixIter
 from core.visualize import visualize
@@ -47,7 +47,7 @@ def main():
     beta1 = config.TRAIN.beta1
     sigma = 0.02
     ctx = [mx.gpu(int(i)) for i in config.gpus.split(',')]
-    assert len(ctx) == 1
+    assert len(ctx) == 1, 'Multi GPU not supported.'
     ctx = ctx[0]
     frequent = config.default.frequent
     check_point = True
@@ -66,7 +66,6 @@ def main():
 
     # ==============data==============
     train_data = pix2pixIter(config, shuffle=True, ctx=ctx)
-    # print train_data.provide_data
 
     step = config.TRAIN.step_epoch * train_data.size / batch_size
     step_decay = config.TRAIN.decay_epoch * train_data.size / batch_size
@@ -95,7 +94,12 @@ def main():
         else:
             raise NotImplemented
     else:
-        generatorSymbol = get_symbol_generator()
+        if config.netG == 'autoencoder':
+            generatorSymbol = defineG_encoder_decoder_batch(config)
+        elif config.netG == 'unet':
+            generatorSymbol = defineG_unet_batch(config)
+        else:
+            raise NotImplemented
     # debug = True
     # if debug:
     #     generatorGroup = generatorSymbol.get_internals()
@@ -117,21 +121,34 @@ def main():
     arg_shapes, _, aux_shapes = generatorSymbol.infer_shape(A = train_data.provide_data[0][1],
                                                             B = train_data.provide_data[1][1])
 
-    for idx, arg_name in enumerate(arg_names):
-        if 'weight' in arg_name:
-            arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
-        elif 'gamma' in arg_name:
-            arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
-        elif 'bias' in arg_name:
-            arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-        elif 'beta' in arg_name:
-            arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-        else:
-            # raise NameError('Unknown parameter name.')
-            pass
-
-    if len(aux_names) > 0:
-        pass
+    if batch_size == 1:
+        for idx, arg_name in enumerate(arg_names):
+            if 'weight' in arg_name:
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
+            elif 'gamma' in arg_name:
+                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+            elif 'bias' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            elif 'beta' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            else:
+                # raise NameError('Unknown parameter name.')
+                pass
+    else:
+        for idx, arg_name in enumerate(arg_names):
+            if 'weight' in arg_name:
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
+            elif 'gamma' in arg_name:
+                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+            elif 'bias' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            elif 'beta' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            else:
+                # raise NameError('Unknown parameter name.')
+                pass
+        for idx, aux_name in enumerate(aux_names):
+            aux_params[aux_name] = mx.nd.zeros(shape=aux_shapes[idx])
 
     # generator.init_params(initializer=mx.init.Normal(sigma))
     generator.init_params(arg_params=arg_params, aux_params=aux_params)
@@ -143,6 +160,7 @@ def main():
                 'learning_rate': lr,
                 'lr_scheduler': lr_scheduler_g,
                 'beta1': beta1,
+                'rescale_grad': 1.0/float(batch_size)
             })
     else:
         generator.init_optimizer(
@@ -150,17 +168,25 @@ def main():
             optimizer_params={
                 'learning_rate': lr,
                 'beta1': beta1,
+                'rescale_grad': 1.0 / float(batch_size)
             })
     mods = [generator]
 
     # =============Discriminator Module=============
-    # discriminatorSymbol = get_symbol_discriminator_instance()
-    if config.netD == 'basic':
-        discriminatorSymbol = defineD_basic()
-    elif config.netD == 'n_layers':
-        discriminatorSymbol = defineD_n_layers(n_layers = config.n_layers)
+    if batch_size == 1:
+        if config.netD == 'basic':
+            discriminatorSymbol = defineD_basic()
+        elif config.netD == 'n_layers':
+            discriminatorSymbol = defineD_n_layers(n_layers = config.n_layers)
+        else:
+            raise NotImplemented
     else:
-        raise NotImplemented
+        if config.netD == 'basic':
+            discriminatorSymbol = defineD_basic_batch(batch_size=batch_size)
+        elif config.netD == 'n_layers':
+            discriminatorSymbol = defineD_n_layers_batch(n_layers = config.n_layers, batch_size=batch_size)
+        else:
+            raise NotImplemented
     # debug = True
     # if debug:
     #     generatorGroup = discriminatorSymbol.get_internals()
@@ -185,25 +211,39 @@ def main():
                                                                 B=train_data.provide_data[1][1],
                                                                 label=(batch_size,))
 
-    for idx, arg_name in enumerate(arg_names):
-        if 'weight' in arg_name:
-            arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
-        elif 'gamma' in arg_name:
-            arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
-        elif 'bias' in arg_name:
-            arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-        elif 'beta' in arg_name:
-            arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
-        else:
-            # raise NameError('Unknown parameter name.')
-            pass
-
-    if len(aux_names) > 0:
-        pass
+    if batch_size == 1:
+        for idx, arg_name in enumerate(arg_names):
+            if 'weight' in arg_name:
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
+            elif 'gamma' in arg_name:
+                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+            elif 'bias' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            elif 'beta' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            else:
+                # raise NameError('Unknown parameter name.')
+                pass
+    else:
+        for idx, arg_name in enumerate(arg_names):
+            if 'weight' in arg_name:
+                arg_params[arg_name] = mx.random.normal(0.0, sigma, shape=arg_shapes[idx])
+            elif 'gamma' in arg_name:
+                arg_params[arg_name] = mx.random.normal(1.0, sigma, shape=arg_shapes[idx])
+            elif 'bias' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            elif 'beta' in arg_name:
+                arg_params[arg_name] = mx.nd.zeros(shape=arg_shapes[idx])
+            else:
+                # raise NameError('Unknown parameter name.')
+                pass
+        for idx, aux_name in enumerate(aux_names):
+            aux_params[aux_name] = mx.nd.zeros(shape=aux_shapes[idx])
 
     # discriminator.init_params(initializer=mx.init.Normal(sigma))
     discriminator.init_params(arg_params=arg_params, aux_params=aux_params)
 
+    # gradient is scaled in LogisticRegression layer, no need to rescale gradient
     if lr_scheduler_d is not None:
         discriminator.init_optimizer(
             optimizer='adam',
@@ -211,6 +251,7 @@ def main():
                 'learning_rate': lr / 2.0,
                 'lr_scheduler': lr_scheduler_d,
                 'beta1': beta1,
+                'rescale_grad': 1.0
             })
     else:
         discriminator.init_optimizer(
@@ -218,6 +259,7 @@ def main():
             optimizer_params={
                 'learning_rate': lr / 2.0,
                 'beta1': beta1,
+                'rescale_grad': 1.0
             })
     mods.append(discriminator)
 

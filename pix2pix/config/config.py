@@ -70,7 +70,8 @@ config.TRAIN.lambda_l1 = 100
 config.TEST = edict()
 
 config.TEST.TEST_EPOCH = 0
-config.TEST.SCALES = [(256, 256)]
+config.TEST.img_h = 256
+config.TEST.img_w = 256
 
 
 def update_config(config_file):
@@ -83,9 +84,6 @@ def update_config(config_file):
                     for vk, vv in v.items():
                         config[k][vk] = vv
                 else:
-                    if k == 'SCALES':
-                        config[k] = (tuple(v))
-                    else:
-                        config[k] = v
+                    config[k] = v
             else:
                 raise ValueError("key must exist in config.py")
