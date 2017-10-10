@@ -4,7 +4,7 @@ output_path: "./output/pix2pix"
 gpus: '1'
 loadSize: 286
 fineSize: 256
-AtoB: True
+AtoB: False
 netG: 'unet'
 netD: 'n_layers'
 n_layers: 3
@@ -13,7 +13,7 @@ default:
   frequent: 10
   kvstore: device
 dataset:
-  dataset: 'edges2shoes'
+  dataset: 'cityscapes'
   root: './data'
   imageset: 'train'
   image_root: './datasets'
