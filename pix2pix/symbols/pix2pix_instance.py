@@ -327,21 +327,21 @@ def defineD_n_layers(n_layers):
                               name='d%d_conv' % (n_layers + 1))
 
     d = mx.sym.Flatten(conv)
-    d = mx.sym.reshape(d, shape=(-1, 1))
+    # d = mx.sym.reshape(d, shape=(-1, 1))
     if n_layers == 0:
         pass
     elif n_layers == 1:
-        label = mx.sym.broadcast_to(label, shape=(15876, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 15876))
     elif n_layers == 2:
-        label = mx.sym.broadcast_to(label, shape=(3844, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 3844))
     elif n_layers == 3:
-        label = mx.sym.broadcast_to(label, shape=(900, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 900))
     elif n_layers == 4:
-        label = mx.sym.broadcast_to(label, shape=(196, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 196))
     elif n_layers == 5:
-        label = mx.sym.broadcast_to(label, shape=(36, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 36))
     elif n_layers == 6:
-        label = mx.sym.broadcast_to(label, shape=(4, 1))
+        label = mx.sym.broadcast_to(label, shape=(1, 4))
 
     discriminatorSymbol = mx.sym.LogisticRegressionOutput(data=d, label=label, name='dloss')
 

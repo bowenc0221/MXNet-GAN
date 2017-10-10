@@ -31,9 +31,10 @@ class L1LossMetric(mx.metric.EvalMetric):
     def __init__(self, cfg):
         super(L1LossMetric, self).__init__('L1Loss')
         self.lambda_l1 = cfg.TRAIN.lambda_l1
+        self.batch_size = cfg.TRAIN.BATCH_SIZE
 
     def update(self, labels, preds):
         l1loss = preds[0].asnumpy()
 
-        self.sum_metric += np.sum(l1loss)*self.lambda_l1
+        self.sum_metric += np.sum(l1loss)*self.lambda_l1/self.batch_size
         self.num_inst += l1loss.shape[0]
