@@ -77,9 +77,9 @@ def main():
             raise NotImplemented
     else:
         if config.netG == 'autoencoder':
-            generatorSymbol = defineG_encoder_decoder_batch(config)
+            generatorSymbol = defineG_encoder_decoder_batch(config, is_train=False)
         elif config.netG == 'unet':
-            generatorSymbol = defineG_unet_batch(config)
+            generatorSymbol = defineG_unet_batch(config, is_train=False)
         else:
             raise NotImplemented
 
