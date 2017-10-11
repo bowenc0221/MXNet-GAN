@@ -101,8 +101,8 @@ This is a working repo initially served as the final project for [UIUC ECE544NA]
 
 ## Results
 ### facades
-#### AtoB
-#### BtoA
+<img src="/img/facades-groundtruth-6.jpg" width="512px"/>  
+
 ### cityscapes
 #### AtoB
 #### BtoA
