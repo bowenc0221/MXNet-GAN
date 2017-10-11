@@ -101,14 +101,27 @@ This is a working repo initially served as the final project for [UIUC ECE544NA]
 
 ## Results
 ### facades
+#### Ground Truth  
 <img src="/img/facades-groundtruth-6.jpg" width="512px"/>  
+
+#### AtoB
+<img src="/img/facades-test-AtoB-000006.png" width="256px"/>  
+
+#### BtoA
+<img src="/img/facades-test-BtoA-000006.png" width="256px"/>  
 
 ### cityscapes
 #### AtoB
 #### BtoA
 ### edges2shoes
+#### Ground Truth
+<img src="/img/edges2shoes-groundtruth-12.jpg.jpg" width="512px"/>  
+
 #### AtoB
+<img src="/img/edges2shoes-test-AtoB-000012.png" width="256px"/>  
+
 #### BtoA
+<img src="/img/edges2shoes-test-BtoA-000012.png" width="256px"/>  
 
 ## Citation
 If you use this code for your research, please cite our paper <a href="https://arxiv.org/pdf/1611.07004v1.pdf">Image-to-Image Translation Using Conditional Adversarial Networks</a>:
