@@ -87,18 +87,18 @@ def main():
     generator.bind(data_shapes=test_data.provide_data)
     generator.load_params(prefix + '-generator-%04d.params' % epoch)
 
-    if batch_size > 1:
-        # use test set statistic by setting mean and variance to zero
-        aux_names = generatorSymbol.list_auxiliary_states()
-        arg_params, aux_params = generator.get_params()
-        for aux_name in aux_names:
-            if 'mean' in aux_name:
-                aux_params[aux_name] = mx.nd.zeros_like(aux_params[aux_name])
-            elif 'var' in aux_name:
-                aux_params[aux_name] = mx.nd.ones_like(aux_params[aux_name])
-            else:
-                raise NameError('Unknown aux_name.')
-        generator.set_params(arg_params=arg_params, aux_params=aux_params)
+    # if batch_size > 1:
+    #     # use test set statistic by setting mean and variance to zero
+    #     aux_names = generatorSymbol.list_auxiliary_states()
+    #     arg_params, aux_params = generator.get_params()
+    #     for aux_name in aux_names:
+    #         if 'mean' in aux_name:
+    #             aux_params[aux_name] = mx.nd.zeros_like(aux_params[aux_name])
+    #         elif 'var' in aux_name:
+    #             aux_params[aux_name] = mx.nd.ones_like(aux_params[aux_name])
+    #         else:
+    #             raise NameError('Unknown aux_name.')
+    #     generator.set_params(arg_params=arg_params, aux_params=aux_params)
 
     test_data.reset()
     count = 1
