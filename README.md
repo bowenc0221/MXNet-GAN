@@ -115,7 +115,7 @@ This is a working repo initially served as the final project for [UIUC ECE544NA]
 #### BtoA
 ### edges2shoes
 #### Ground Truth
-<img src="/img/edges2shoes-groundtruth-12.jpg.jpg" width="512px"/>  
+<img src="/img/edges2shoes-groundtruth-12.jpg" width="512px"/>  
 
 #### AtoB
 <img src="/img/edges2shoes-test-AtoB-000012.png" width="256px"/>  
