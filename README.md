@@ -111,8 +111,15 @@ This is a working repo initially served as the final project for [UIUC ECE544NA]
 <img src="/img/facades-test-BtoA-000006.png" width="256px"/>  
 
 ### cityscapes
+#### Ground Truth
+<img src="/img/cityscapes-groundtruth-35.jpg" width="512px"/>
+
 #### AtoB
+<img src="/img/cityscapes-test-AtoB-000035.png" width="256px"/>
+
 #### BtoA
+<img src="/img/cityscapes-test-BtoA-000035.png" width="256px"/>
+
 ### edges2shoes
 #### Ground Truth
 <img src="/img/edges2shoes-groundtruth-12.jpg" width="512px"/>  
