@@ -7,7 +7,7 @@ import os
 import sys
 import matplotlib
 matplotlib.use('Agg')
-from skimage import io
+# from skimage import io
 from config.config import config, update_config
 
 def parse_args():
@@ -109,5 +109,6 @@ def main():
         fake_B = np.clip((fake_B + 1.0) * (255.0 / 2.0), 0, 255).astype(np.uint8)
         for n in range(batch_size):
             fname = test_fig_prefix + '-test-%04d-%06d.png' % (epoch, count + n)
-            io.imsave(fname, fake_B[n])
+            # io.imsave(fname, fake_B[n])
+            cv2.imwrite(fname, fake_B[n])
         count += batch_size
