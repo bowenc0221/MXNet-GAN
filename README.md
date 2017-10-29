@@ -153,3 +153,4 @@ Code is inspired by:
 [2] [MXNet DCGAN Example](https://github.com/apache/incubator-mxnet/blob/master/example/gan/dcgan.py)  
 [3] [A MXNet W-GAN Code](https://github.com/vsooda/mxnet-wgan)  
 [4] [pytorch-CycleGAN-and-pix2pix](https://github.com/bowenc0221/pytorch-CycleGAN-and-pix2pix)  
+[5] [Gluon GAN Tutorials](http://gluon.mxnet.io/)
