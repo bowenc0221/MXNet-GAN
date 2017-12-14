@@ -1,6 +1,16 @@
+# --------------------------------------------------------
+# MXNet Implementation of pix2pix GAN
+# Copyright (c) 2017 UIUC
+# Written by Bowen Cheng
+# --------------------------------------------------------
+
 # Symbols for pix2pix
 # Generator: learn A -> B
 # Discriminator: (A, B) -> real/fake
+
+# Please refer to either pix2pix_batch.py or pix2pix_instance.py
+
+raise Exception('Do not use pix2pix.py!')
 
 import mxnet as mx
 

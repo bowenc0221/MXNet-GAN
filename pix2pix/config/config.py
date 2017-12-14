@@ -1,7 +1,6 @@
 # --------------------------------------------------------
-# Generative Adversarial Net
-# Copyright (c) 2016 by Contributors
-# Licensed under The Apache-2.0 License [see LICENSE for details]
+# MXNet Implementation of pix2pix GAN
+# Copyright (c) 2017 UIUC
 # Modified by Bowen Cheng
 # --------------------------------------------------------
 

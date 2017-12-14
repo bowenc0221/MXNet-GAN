@@ -1,3 +1,9 @@
+# --------------------------------------------------------
+# MXNet Implementation of pix2pix GAN
+# Copyright (c) 2017 UIUC
+# Written by Bowen Cheng
+# --------------------------------------------------------
+
 import logging
 from mxnet.lr_scheduler import LRScheduler
 

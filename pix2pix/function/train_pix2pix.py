@@ -1,3 +1,9 @@
+# --------------------------------------------------------
+# MXNet Implementation of pix2pix GAN
+# Copyright (c) 2017 UIUC
+# Written by Bowen Cheng
+# --------------------------------------------------------
+
 import cv2
 import time
 import argparse

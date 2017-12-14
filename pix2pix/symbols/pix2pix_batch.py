@@ -1,3 +1,9 @@
+# --------------------------------------------------------
+# MXNet Implementation of pix2pix GAN
+# Copyright (c) 2017 UIUC
+# Written by Bowen Cheng
+# --------------------------------------------------------
+
 # Symbols for pix2pix
 # Generator: learn A -> B
 # Discriminator: (A, B) -> real/fake
