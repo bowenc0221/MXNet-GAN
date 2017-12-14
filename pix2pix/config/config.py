@@ -23,6 +23,7 @@ config.AtoB = False
 config.netG = 'autoencoder'  # 'autoencoder' or 'unet'
 config.netD = 'basic'  # 'basic' or 'n_layers'
 config.n_layers = 0  # only used if netD=='n_layers'
+config.GAN_loss = 1  # use GAN loss set to 1, do not use GAN loss set to 0
 
 # default training
 config.default = edict()

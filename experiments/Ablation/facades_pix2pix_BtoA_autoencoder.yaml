@@ -1,0 +1,36 @@
+---
+MXNET_VERSION: "v0.11.1"
+output_path: "./output/pix2pix"
+gpus: '0'
+loadSize: 286
+fineSize: 256
+AtoB: False
+netG: 'autoencoder'
+netD: 'basic'
+n_layers: 0
+
+default:
+  frequent: 100
+  kvstore: device
+dataset:
+  dataset: 'facades'
+  root: './data'
+  imageset: 'train'
+  image_root: './datasets'
+  testset: 'val'
+TRAIN:
+  lr: 0.0002
+  beta1: 0.5
+  end_epoch: 200
+  step_epoch: 100
+  decay_epoch: 100
+  lambda_l1: 100
+  model_prefix: 'pix2pix'
+  epoch_end_plot_figure: True
+  batch_end_plot_figure: False
+  save_interval: 20
+  BATCH_SIZE: 1
+TEST:
+  TEST_EPOCH: 200
+  img_h: 256
+  img_w: 256

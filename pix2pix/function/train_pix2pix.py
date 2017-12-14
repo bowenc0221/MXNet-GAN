@@ -331,7 +331,7 @@ def main():
             discriminator.backward()
             diffD = discriminator.get_input_grads()
             # loss does not need output gradient
-            generator.backward([mx.nd.array(np.ones((batch_size,)), ctx=ctx), diffD[1]])
+            generator.backward([mx.nd.array(np.ones((batch_size,)), ctx=ctx), diffD[1] * config.GAN_loss])
             generator.update()
 
             mG.update([label], discriminator.get_outputs())
