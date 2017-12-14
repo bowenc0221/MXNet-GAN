@@ -46,7 +46,7 @@ def main():
     dataset = config.dataset.dataset
     batch_size = config.TRAIN.BATCH_SIZE
     ctx = [mx.gpu(int(i)) for i in config.gpus.split(',')]
-    assert len(ctx) == 1
+    assert len(ctx) == 1, 'Multi GPU not supported.'
     ctx = ctx[0]
     epoch = config.TEST.TEST_EPOCH
 
@@ -59,8 +59,8 @@ def main():
 
     test_fig_prefix = os.path.join(test_fig_path, dataset)
 
-    # mx.random.seed(config.RNG_SEED)
-    # np.random.seed(config.RNG_SEED)
+    mx.random.seed(config.RNG_SEED)
+    np.random.seed(config.RNG_SEED)
 
     # ==============data==============
     test_data = pix2pixIter(config, shuffle=False, ctx=ctx, is_train=False)
@@ -68,10 +68,10 @@ def main():
     # print config
     pprint.pprint(config)
     print 'mxnet path:{}'.format(mx.__file__)
-    # logger.info('system:{}'.format(os.uname()))
-    # logger.info('mxnet path:{}'.format(mx.__file__))
-    # logger.info('rng seed:{}'.format(config.RNG_SEED))
-    # logger.info('training config:{}\n'.format(pprint.pformat(config)))
+    logger.info('system:{}'.format(os.uname()))
+    logger.info('mxnet path:{}'.format(mx.__file__))
+    logger.info('rng seed:{}'.format(config.RNG_SEED))
+    logger.info('training config:{}\n'.format(pprint.pformat(config)))
 
     # =============Generator Module=============
     if batch_size == 1:
@@ -115,6 +115,5 @@ def main():
         fake_B = np.clip((fake_B + 1.0) * (255.0 / 2.0), 0, 255).astype(np.uint8)
         for n in range(batch_size):
             fname = test_fig_prefix + '-test-%04d-%06d.png' % (epoch, count + n)
-            # io.imsave(fname, fake_B[n])
             cv2.imwrite(fname, fake_B[n])
         count += batch_size

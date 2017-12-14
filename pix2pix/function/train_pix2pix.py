@@ -46,6 +46,8 @@ from core.lr_scheduler import PIX2PIXScheduler
 
 
 def main():
+    # set debug
+    DEBUG = False
     # =============setting============
     dataset = config.dataset.dataset
     batch_size = config.TRAIN.BATCH_SIZE
@@ -67,8 +69,9 @@ def main():
     if not os.path.exists(train_fig_path):
         os.makedirs(train_fig_path)
 
-    # mx.random.seed(config.RNG_SEED)
-    # np.random.seed(config.RNG_SEED)
+    # set random seed for reproducibility
+    mx.random.seed(config.RNG_SEED)
+    np.random.seed(config.RNG_SEED)
 
     # ==============data==============
     train_data = pix2pixIter(config, shuffle=True, ctx=ctx)
@@ -106,16 +109,17 @@ def main():
             generatorSymbol = defineG_unet_batch(config)
         else:
             raise NotImplemented
-    # debug = True
-    # if debug:
-    #     generatorGroup = generatorSymbol.get_internals()
-    #     name_list = generatorGroup.list_outputs()
-    #     out_name = []
-    #     for name in name_list:
-    #         if 'output' in name:
-    #             out_name += [generatorGroup[name]]
-    #     out_group = mx.sym.Group(out_name)
-    #     out_shapes = out_group.infer_shape(A=(4, 3, 256, 256))
+
+    if DEBUG:
+        generatorGroup = generatorSymbol.get_internals()
+        name_list = generatorGroup.list_outputs()
+        out_name = []
+        for name in name_list:
+            if 'output' in name:
+                out_name += [generatorGroup[name]]
+        out_group = mx.sym.Group(out_name)
+        out_shapes = out_group.infer_shape(A=(4, 3, 256, 256))
+
     generator = mx.mod.Module(symbol=generatorSymbol, data_names=('A', 'B',), label_names=None, context=ctx)
     generator.bind(data_shapes=train_data.provide_data)
 
@@ -161,7 +165,6 @@ def main():
             else:
                 raise NameError('Unknown aux_name.')
 
-    # generator.init_params(initializer=mx.init.Normal(sigma))
     generator.init_params(arg_params=arg_params, aux_params=aux_params)
 
     if lr_scheduler_g is not None:
@@ -198,16 +201,17 @@ def main():
             discriminatorSymbol = defineD_n_layers_batch(n_layers = config.n_layers, batch_size=batch_size)
         else:
             raise NotImplemented
-    # debug = True
-    # if debug:
-    #     generatorGroup = discriminatorSymbol.get_internals()
-    #     name_list = generatorGroup.list_outputs()
-    #     out_name = []
-    #     for name in name_list:
-    #         if 'output' in name:
-    #             out_name += [generatorGroup[name]]
-    #     out_group = mx.sym.Group(out_name)
-    #     out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256))
+
+    if DEBUG:
+        generatorGroup = discriminatorSymbol.get_internals()
+        name_list = generatorGroup.list_outputs()
+        out_name = []
+        for name in name_list:
+            if 'output' in name:
+                out_name += [generatorGroup[name]]
+        out_group = mx.sym.Group(out_name)
+        out_shapes = out_group.infer_shape(A=(1, 3, 256, 256), B=(1, 3, 256, 256))
+
     discriminator = mx.mod.Module(symbol=discriminatorSymbol, data_names=('A', 'B',), label_names=('label',), context=ctx)
     discriminator.bind(data_shapes=train_data.provide_data,
                        label_shapes=[('label', (batch_size,))],
@@ -256,7 +260,6 @@ def main():
             else:
                 raise NameError('Unknown aux_name.')
 
-    # discriminator.init_params(initializer=mx.init.Normal(sigma))
     discriminator.init_params(arg_params=arg_params, aux_params=aux_params)
 
     # gradient is scaled in LogisticRegression layer, no need to rescale gradient
