@@ -131,9 +131,28 @@ This is a working repo initially served as the final project for [UIUC ECE544NA]
 <img src="/img/edges2shoes-test-BtoA-000012.png" width="256px"/>  
 
 ## Citation
-If you use this code for your research, please cite our paper <a href="https://arxiv.org/pdf/1611.07004v1.pdf">Image-to-Image Translation Using Conditional Adversarial Networks</a>:
+If you use this code for your research, here is a list of paper you can refer to:
 
 ```
+@inproceedings{goodfellow2014generative,
+  title={Generative adversarial nets},
+  author={Goodfellow, Ian and Pouget-Abadie, Jean and Mirza, Mehdi and Xu, Bing and Warde-Farley, David and Ozair, Sherjil and Courville, Aaron and Bengio, Yoshua},
+  booktitle={Advances in neural information processing systems},
+  pages={2672--2680},
+  year={2014}
+}
+@article{mirza2014conditional,
+  title={Conditional generative adversarial nets},
+  author={Mirza, Mehdi and Osindero, Simon},
+  journal={arXiv preprint arXiv:1411.1784},
+  year={2014}
+}
+@article{radford2015unsupervised,
+  title={Unsupervised representation learning with deep convolutional generative adversarial networks},
+  author={Radford, Alec and Metz, Luke and Chintala, Soumith},
+  journal={arXiv preprint arXiv:1511.06434},
+  year={2015}
+}
 @article{pix2pix2016,
   title={Image-to-Image Translation with Conditional Adversarial Networks},
   author={Isola, Phillip and Zhu, Jun-Yan and Zhou, Tinghui and Efros, Alexei A},
